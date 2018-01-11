@@ -200,6 +200,7 @@ fabric.properties
 *.sqlite3
 */migrations
 *.db
+media/*
 
 # testdata
 *.vcf.gz
