@@ -1,0 +1,33 @@
+{% extends "paginated.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-around my-4">
+        <div class="col-lg-10">
+            <table class="table table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Authors</th>
+                    <th scope="col">Year</th>
+                    <th scope="col">Journal</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for publication in publications %}
+                    <tr>
+                        <td class="align-middle">
+                            <a class="text-muted" href="{{ publication.link }}">
+                                {{ publication.title }}
+                            </a>
+                        </td>
+                        <td class="align-middle">{{ publication.authors }}</td>
+                        <td class="align-middle">{{ publication.year }}</td>
+                        <td class="align-middle">{{ publication.journal }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+

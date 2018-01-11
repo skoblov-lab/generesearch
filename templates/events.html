@@ -1,0 +1,38 @@
+{% extends "paginated.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-around my-4">
+        <div class="col-lg-10">
+            <table class="table table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Begins</th>
+                    <th scope="col">Ends</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for event in events %}
+                    <tr class="table-{% if forloop.counter0|divisibleby:"2" %}default{% else %}primary{% endif %}">
+                        <td>{{ event.type }}</td>
+                        <td>
+                            <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>
+                        </td>
+                        <td>{{ event.start }}</td>
+                        <td>{{ event.end|default_if_none:"" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{#    <script>#}
+        {# update page every 10 seconds #}
+{#        setTimeout(function () {#}
+{#            window.location.reload(true);#}
+{#        }, 10000);#}
+{#    </script>#}
+
+{% endblock %}
+

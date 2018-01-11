@@ -1,0 +1,40 @@
+{% load static %}
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SkoblovLab</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Style customisation -->
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+
+</head>
+
+
+<body>
+<!-- Navigation bar -->
+{% include 'navbar.html' %}
+
+<!-- Page content -->
+{% block content %}{% endblock %}
+
+{% block pagination %}{% endblock %}
+
+<!-- Footer -->
+{% include 'footer.html' %}
+
+</body>

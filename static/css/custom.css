@@ -1,0 +1,27 @@
+.navbar {
+    min-height: 28px !important;
+    margin-bottom: 20px;
+}
+
+/* Sticky footer  */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    padding-top: 100px;
+    padding-bottom: 20px;
+    margin-bottom: 50px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 50px;
+    line-height: 50px; /* Vertically center the text there */
+    background-color: #f5f5f5;
+}

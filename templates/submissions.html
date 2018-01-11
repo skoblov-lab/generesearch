@@ -1,0 +1,44 @@
+{% extends "paginated.html" %}
+
+{% block content %}
+    {% include 'cookies.html' %}
+    <div class="d-flex justify-content-around my-4">
+        <div class="col-lg-10">
+            <table class="table table-hover text-center">
+                <tbody>
+                {% for submission in submissions %}
+                    <tr class="table-{{ submission.table_view_status }}">
+                        <div class="d-flex justify-content-between">
+                            <td class="align-middle">
+                                <div>{{ submission.service }}</div>
+                            </td>
+                            <td class="align-middle">
+                                <div>{{ submission.date }}</div>
+                            </td>
+                            <td class="align-middle">
+                                <div>{{ submission.message }}</div>
+                            </td>
+                            <td class="align-middle">
+                                <a class="btn btn-primary btn-sm
+                                      {% if not submission.isready %}
+                                      disabled
+                                      {% endif %}"
+                                   href="{{ submission.response_url }}">
+                                    Download
+                                </a>
+                            </td>
+                        </div>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        {#update page every 10 seconds#}
+        setTimeout(function () {window.location.reload(true);}, 10000);
+    </script>
+
+{% endblock %}
+

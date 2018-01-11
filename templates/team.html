@@ -1,0 +1,34 @@
+{% extends "paginated.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-around flex-wrap my-4">
+            {% for employee in employees %}
+                <div class="card mb-3 text-center align-content-center"
+                     style="max-width: 250px; min-width: 250px">
+                    <div class="card-header">{{ employee }}</div>
+                    <div class="card-body">
+                        <div class="container-fluid">
+                            <img class="img-responsive"
+                                 style="max-height: 220px"
+                                 src="{{ employee.image_url }}">
+                        </div>
+                        <p class="card-text text-primary">
+                            {% for interest in employee.list_interests %}
+                                {{ interest }}<br>
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            {{ employee.email }}
+                        </li>
+                    </ul>
+                    <div class="card-footer text-muted">
+                        {{ employee.position }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

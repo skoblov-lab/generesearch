@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <div class="container my-5">
+        <div class="jumbotron">
+            <div class="text-center my-4">
+                <h1>Welcome to the GeneResearch Lab</h1>
+            </div>
+            {% if events %}
+            <div class="text-center my-4">
+                <h5>Recent and upcoming events</h5>
+            </div>
+            <div class="d-flex justify-content-around my-4">
+                {% for event in events|slice:"3" %}
+                    <div class="card border-primary mb-3"
+                         style="max-width: 14rem;">
+                        <div class="card-header text-center">{{ event.type }}</div>
+                        <div class="card-body text-primary">
+                            <a href="{{ event.get_absolute_url }}">
+                                <h5 class="card-title text-center">{{ event.title }}</h5>
+                            </a>
+                            <p class="card-text text-justify">{{ event.abstract }}</p>
+                        </div>
+                        <div class="card-footer small text-center text-muted">
+                            {{ event.start }}{% if event.end %}-
+                                {{ event.end }}{% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {%  endif %}
+            </div>
+        </div>
+        <div class="d-flex justify-content-around my-4">
+            <div class="text-center">
+                <p><a class="btn btn-lg btn-primary bg-dark"
+                      href="{% url 'about' %}"
+                      role="button">
+                    Learn more</a></p>
+            </div>
+            <div class="ctext-center">
+                <p><a class="btn btn-lg btn-primary bg-dark" href="{% url 'join' %}"
+                      role="button">Join
+                    our Team</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
