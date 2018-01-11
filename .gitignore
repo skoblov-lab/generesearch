@@ -204,3 +204,18 @@ media/*
 
 # testdata
 *.vcf.gz
+.idea/
+Phen103.vcf.gz
+Phen110.vcf.gz
+celerybeat-schedule.db
+config.json
+db.sqlite3
+grservices/
+gunicorn_config.py
+info/
+labsite/
+manage.py
+media/
+services/
+static/
+templates/
