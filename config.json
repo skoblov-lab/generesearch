@@ -1,9 +1,0 @@
-{
-  "SERVICES_ROOT": "",
-  "SECRET_KEY": "",
-  "SUBMISSION_LIFESPAN_SECONDS": 86400,
-  "UPLOAD_EXT_SUFFIX": "grupload",
-  "DEBUG": false,
-  "STATIC_ROOT": "",
-  "MEDIA_ROOT": ""
-}
