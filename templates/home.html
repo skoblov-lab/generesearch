@@ -14,7 +14,7 @@
             <div class="d-flex justify-content-around my-4">
                 {% for event in events|slice:"3" %}
                     <div class="card border-primary mb-3"
-                         style="max-width: 14rem;">
+                         style="max-width: 18rem;">
                         <div class="card-header text-center">{{ event.type }}</div>
                         <div class="card-body text-primary">
                             <a href="{{ event.get_absolute_url }}">
