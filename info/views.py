@@ -37,7 +37,7 @@ class PublicationListView(PaginatedListView):
     context_object_name = 'publications'
 
 
-class EmployeeListView(PaginatedListView):
+class EmployeeListView(generic.ListView):
     model = Employee
     template_name = 'team.html'
     context_object_name = 'employees'
