@@ -1,5 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="container text-justify my-4">
+        <h5>Undergraduate students</h5>
+        <p>
+            A student can either join one of our projects or propose one that
+            fits
+            the field of our expertise and interests. In both cases the work
+            implies
+            researching available literature and being responsible for one's
+            project. All undergraduate students must be willing and able to
+            commit
+            to at least a full year's worth of time in the lab. We expect our
+            students to work at least 15 hours per week. If you are interested,
+            please contact either <a href="{% url 'team' %}">Mikle Skoblov or
+            Ilia Korvigo</a>.
+        </p>
+
+        <h5>PhD students and post-docs</h5>
+        <p>
+            The lab is fairly evenly divided into wet laboratory and
+            computational
+            people. We tend to do things with a "systems biology" approach
+            (e.g.,
+            field work combined with molecular biology and mathematics). We
+            expect
+            people to be independent. We are most interested in PhD students and
+            experienced post-docs who want to be research fellows. When applying
+            for
+            a position like this, it is important that you choose someone who
+            will
+            give you a project to "make your own". We are happy to do this, but
+            we
+            will expect you to take advantage of the opportunity and learn to
+            write
+            grant applications, give talks, etc. We also expect you to train and
+            guide undergraduate students. To schedule an interview contact <a
+                href="{% url 'team' %}">Mikle Skoblov</a>
+        </p>
+        <h5>Collaborations</h5>
+        <p>
+            We are always open for productive and interesting collaborations.
+            Please, contact <a href="{% url 'team' %}">
+            Mikle Skoblov</a> to discuss the matter.
+        </p>
+    </div>
 
 {% endblock %}
