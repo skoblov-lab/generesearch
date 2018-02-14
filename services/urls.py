@@ -7,7 +7,6 @@ from . import views
 
 urlpatterns = [
     url(r'^badmut/$', views.badmut_service, name='badmut'),
-    url(r'^mirna/$', TemplateView.as_view(template_name='mirna.html'),
-        name='mirna'),
+    url(r'^mirna/$', views.mirna_service, name='mirna'),
     url(r'^submissions/$', views.submissions, name='submissions'),
 ]
