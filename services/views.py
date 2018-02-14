@@ -6,7 +6,6 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from multipledispatch import dispatch
 
 from services import tasks
 from services.forms import AlleleForm, BulkForm
@@ -20,25 +19,7 @@ VCF_TEMPLATE = """##fileformat=VCFv4.1
 {}\t{}\t.\t{}\t{}\t.\t.\t."""
 
 
-@dispatch(BulkForm)
-def submit_vcfquery(form: BulkForm, service: str) -> str:
-    """
-    Submit a bulk BadMut query
-    :param form: a bound form
-    :param service: service itentifier: should be one of tasks.VCFQUERY_SERVICES
-    :return:
-    """
-    if service not in tasks.VCFQUERY_SERVICES:
-        raise ValueError(
-            f'service must be one if {list(tasks.VCFQUERY_SERVICES.keys())}')
-    upload = form.cleaned_data['file']
-    assembly = form.cleaned_data['assembly']
-    filepath = os.path.join(settings.MEDIA_ROOT, upload.name)
-    return tasks.vcfquery.delay(service, assembly, filepath, upload.error).task_id
-
-
-@dispatch(AlleleForm)
-def submit_vcfquery(form: AlleleForm, service: str) -> str:
+def submit_vcfquery(form: Union[AlleleForm, BulkForm], service: str) -> str:
     """
     Submit a point BadMut query
     :param form: a bound form
@@ -48,15 +29,24 @@ def submit_vcfquery(form: AlleleForm, service: str) -> str:
     if service not in tasks.VCFQUERY_SERVICES:
         raise ValueError(
             f'service must be one if {list(tasks.VCFQUERY_SERVICES.keys())}')
-    data = form.cleaned_data
-    assembly, chrom, pos, ref, alt = [
-        data[key] for key in ('assembly', 'chrom', 'pos', 'ref', 'alt')
-    ]
-    with tempfile.NamedTemporaryFile(mode='w', dir=settings.MEDIA_ROOT,
-                                     delete=False, suffix='.upload.vcf') as out:
-        print(VCF_TEMPLATE.format(chrom, pos, ref, alt), file=out)
-        filepath = out.name
-    return tasks.vcfquery.delay(service, assembly, filepath, None).task_id
+    if isinstance(form, AlleleForm):
+        data = form.cleaned_data
+        assembly, chrom, pos, ref, alt = [
+            data[key] for key in ('assembly', 'chrom', 'pos', 'ref', 'alt')
+        ]
+        with tempfile.NamedTemporaryFile(mode='w', dir=settings.MEDIA_ROOT,
+                                         delete=False, suffix='.upload.vcf') as out:
+            print(VCF_TEMPLATE.format(chrom, pos, ref, alt), file=out)
+            filepath = out.name
+        return tasks.vcfquery.delay(service, assembly, filepath, None).task_id
+    if isinstance(form, BulkForm):
+        upload = form.cleaned_data['file']
+        assembly = form.cleaned_data['assembly']
+        filepath = os.path.join(settings.MEDIA_ROOT, upload.name)
+        return tasks.vcfquery.delay(service, assembly, filepath,
+                                    upload.error).task_id
+
+    assert False
 
 
 def bind_vcfquery(request) -> Union[BulkForm, AlleleForm]:

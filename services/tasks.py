@@ -22,15 +22,6 @@ VCFQUERY_SERVICES = {
 }
 
 
-class RequestInputType:
-    snv = 1
-    bulk = 2
-
-
-class InputValidationError(ValueError):
-    pass
-
-
 @shared_task
 def vcfquery(service: str, assembly: str, input_file: str, error: Optional[str]):
     if service not in VCFQUERY_SERVICES:
@@ -40,8 +31,8 @@ def vcfquery(service: str, assembly: str, input_file: str, error: Optional[str])
                             service=VCFQUERY_SERVICES[service])
     submission.save()
     output_file = f'{input_file.split(".", 1)[0]}.{service}.vcf.gz'
-    service = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
-    command = [service, assembly, input_file, output_file]
+    tool = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
+    command = [tool, assembly, input_file, output_file]
     try:
         if error is not None:
             submission.status = ERROR

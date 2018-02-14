@@ -27,7 +27,7 @@ class PointForm(AssemblyForm):
                             required=True, max_length=3,
                             label='Chromosome')
     pos = forms.IntegerField(required=True, label='Position (1-based)',
-                             min_value=0)
+                             min_value=1)
 
 
 class AlleleForm(PointForm):
