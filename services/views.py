@@ -2,16 +2,15 @@ import os
 import tempfile
 from typing import Union
 
-from celery import result
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from multipledispatch import dispatch
 
+from services import tasks
 from services.forms import AlleleForm, BulkForm
 from services.models import Submission
-from services.tasks import badmut
 
 SUBMISSIONS = 'submissions'
 
@@ -22,25 +21,33 @@ VCF_TEMPLATE = """##fileformat=VCFv4.1
 
 
 @dispatch(BulkForm)
-def bmsubmit(form: BulkForm) -> str:
+def submit_vcfquery(form: BulkForm, service: str) -> str:
     """
     Submit a bulk BadMut query
     :param form: a bound form
+    :param service: service itentifier: should be one of tasks.VCFQUERY_SERVICES
     :return:
     """
+    if service not in tasks.VCFQUERY_SERVICES:
+        raise ValueError(
+            f'service must be one if {list(tasks.VCFQUERY_SERVICES.keys())}')
     upload = form.cleaned_data['file']
     assembly = form.cleaned_data['assembly']
     filepath = os.path.join(settings.MEDIA_ROOT, upload.name)
-    return badmut.delay(assembly, filepath, upload.error).task_id
+    return tasks.vcfquery.delay(service, assembly, filepath, upload.error).task_id
 
 
 @dispatch(AlleleForm)
-def bmsubmit(form: AlleleForm) -> str:
+def submit_vcfquery(form: AlleleForm, service: str) -> str:
     """
     Submit a point BadMut query
     :param form: a bound form
+    :param service: service itentifier: should be one of tasks.VCFQUERY_SERVICES
     :return:
     """
+    if service not in tasks.VCFQUERY_SERVICES:
+        raise ValueError(
+            f'service must be one if {list(tasks.VCFQUERY_SERVICES.keys())}')
     data = form.cleaned_data
     assembly, chrom, pos, ref, alt = [
         data[key] for key in ('assembly', 'chrom', 'pos', 'ref', 'alt')
@@ -49,10 +56,10 @@ def bmsubmit(form: AlleleForm) -> str:
                                      delete=False, suffix='.upload.vcf') as out:
         print(VCF_TEMPLATE.format(chrom, pos, ref, alt), file=out)
         filepath = out.name
-    return badmut.delay(assembly, filepath, None).task_id
+    return tasks.vcfquery.delay(service, assembly, filepath, None).task_id
 
 
-def bind(request) -> Union[BulkForm, AlleleForm]:
+def bind_vcfquery(request) -> Union[BulkForm, AlleleForm]:
     """
     Bind a request to a form
     :param request:
@@ -65,14 +72,27 @@ def bind(request) -> Union[BulkForm, AlleleForm]:
 
 def badmut_service(request):
     if request.method == 'POST':
-        form = bind(request)
+        form = bind_vcfquery(request)
         if form.is_valid():
             # bind task ID to user's submissions
-            request.session.setdefault(SUBMISSIONS, []).append(bmsubmit(form))
+            taskid = submit_vcfquery(form, tasks.BADMUT)
+            request.session.setdefault(SUBMISSIONS, []).append(taskid)
             request.session.modified = True
             return HttpResponseRedirect(reverse('submissions'))
     return render(request, 'badmut.html',
                   {'allele_form': AlleleForm(), 'bulk_form': BulkForm()})
+
+
+def mirna_service(request):
+    if request.method == 'POST':
+        form = bind_vcfquery(request)
+        if form.is_valid():
+            # bind task ID to user's submissions
+            taskid = submit_vcfquery(form, tasks.MIRNA)
+            request.session.setdefault(SUBMISSIONS, []).append(taskid)
+            request.session.modified = True
+            return HttpResponseRedirect(reverse('submissions'))
+    return render(request, 'mirna.html', {'bulk_form': BulkForm()})
 
 
 def submissions(request):

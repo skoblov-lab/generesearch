@@ -61,8 +61,6 @@
                           enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ bulk_form.as_p }}
-                        {#                                </div>#}
-                        {#                            <div class="d-flex justify-content-around">#}
                         <button type="submit" name="bulk-form"
                                 class="btn btn-primary bg-dark">
                             Submit

@@ -15,6 +15,11 @@ from services.models import ERROR, READY, Submission
 
 OUTPUT = 'output'
 BADMUT = 'badmut'
+MIRNA = 'mirna'
+VCFQUERY_SERVICES = {
+    BADMUT: 'BadMut',
+    MIRNA: 'miRNA'
+}
 
 
 class RequestInputType:
@@ -27,11 +32,15 @@ class InputValidationError(ValueError):
 
 
 @shared_task
-def badmut(assembly: str, input_file: str, error: Optional[str]):
-    submission = Submission(badmut.request.id, service='BadMut')
+def vcfquery(service: str, assembly: str, input_file: str, error: Optional[str]):
+    if service not in VCFQUERY_SERVICES:
+        raise ValueError(
+            f'service must be one if {list(VCFQUERY_SERVICES.keys())}')
+    submission = Submission(vcfquery.request.id,
+                            service=VCFQUERY_SERVICES[service])
     submission.save()
-    output_file = f'{input_file.split(".", 1)[0]}.{BADMUT}.vcf.gz'
-    service = os.path.join(settings.SERVICES_ROOT, BADMUT, BADMUT + '.sh')
+    output_file = f'{input_file.split(".", 1)[0]}.{service}.vcf.gz'
+    service = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
     command = [service, assembly, input_file, output_file]
     try:
         if error is not None:
