@@ -11,14 +11,14 @@ from multipledispatch import dispatch
 
 from services.forms import AlleleForm, BulkForm
 from services.models import Submission
-from services.tasks import badmut
+from services import tasks
 
 SUBMISSIONS = 'submissions'
 
 BULK = 'bulk-form'
 VCF_TEMPLATE = """##fileformat=VCFv4.1
-#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO
-{}\t{}\t.\t{}\t{}\t.\t.\t."""
+#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT
+{}\t{}\t.\t{}\t{}\t.\t.\t.\t."""
 
 
 @dispatch(BulkForm)
@@ -31,7 +31,8 @@ def bmsubmit(form: BulkForm) -> str:
     upload = form.cleaned_data['file']
     assembly = form.cleaned_data['assembly']
     filepath = os.path.join(settings.MEDIA_ROOT, upload.name)
-    return badmut.delay(assembly, filepath, upload.error).task_id
+    return tasks.vcfservice.delay(
+        tasks.BADMUT, assembly, filepath, upload.error).task_id
 
 
 @dispatch(AlleleForm)
@@ -49,7 +50,22 @@ def bmsubmit(form: AlleleForm) -> str:
                                      delete=False, suffix='.upload.vcf') as out:
         print(VCF_TEMPLATE.format(chrom, pos, ref, alt), file=out)
         filepath = out.name
-    return badmut.delay(assembly, filepath, None).task_id
+    return tasks.vcfservice.delay(
+        tasks.BADMUT, assembly, filepath, None).task_id
+
+
+@dispatch(BulkForm)
+def mirnasubmit(form: BulkForm) -> str:
+    """
+    Submit a bulk miRNA query
+    :param form: a bound form
+    :return:
+    """
+    upload = form.cleaned_data['file']
+    assembly = form.cleaned_data['assembly']
+    filepath = os.path.join(settings.MEDIA_ROOT, upload.name)
+    return tasks.vcfservice.delay(
+        tasks.MIRNA, assembly, filepath, upload.error).task_id
 
 
 def bind(request) -> Union[BulkForm, AlleleForm]:
@@ -59,7 +75,7 @@ def bind(request) -> Union[BulkForm, AlleleForm]:
     :return:
     """
     form = (BulkForm if any(key.startswith(BULK) for key in request.POST) else
-    AlleleForm)
+            AlleleForm)
     return form(request.POST, request.FILES)
 
 
@@ -73,6 +89,17 @@ def badmut_service(request):
             return HttpResponseRedirect(reverse('submissions'))
     return render(request, 'badmut.html',
                   {'allele_form': AlleleForm(), 'bulk_form': BulkForm()})
+
+
+def mirna_service(request):
+    if request.method == 'POST':
+        form = bind(request)
+        if form.is_valid():
+            # bind task ID to user's submissions
+            request.session.setdefault(SUBMISSIONS, []).append(mirnasubmit(form))
+            request.session.modified = True
+            return HttpResponseRedirect(reverse('submissions'))
+    return render(request, 'mirna.html', {'bulk_form': BulkForm()})
 
 
 def submissions(request):
