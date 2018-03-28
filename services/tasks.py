@@ -33,8 +33,8 @@ def vcfservice(service, assembly: str, input_file: str, error: Optional[str]):
     submission = Submission(vcfservice.request.id, service=VCFSERVICES[service])
     submission.save()
     output_file = f'{input_file.split(".", 1)[0]}.{service}.vcf.gz'
-    service = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
-    command = [service, assembly, input_file, output_file]
+    executable = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
+    command = [executable, assembly, input_file, output_file]
     try:
         if error is not None:
             submission.status = ERROR
