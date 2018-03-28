@@ -15,11 +15,11 @@ from services.models import ERROR, READY, Submission
 
 OUTPUT = 'output'
 BADMUT = 'badmut'
-
-
-class RequestInputType:
-    snv = 1
-    bulk = 2
+MIRNA = 'mirna'
+VCFSERVICES = {
+    BADMUT: 'BadMut',
+    MIRNA: 'miRNA'
+}
 
 
 class InputValidationError(ValueError):
@@ -27,11 +27,13 @@ class InputValidationError(ValueError):
 
 
 @shared_task
-def badmut(assembly: str, input_file: str, error: Optional[str]):
-    submission = Submission(badmut.request.id, service='BadMut')
+def vcfservice(service, assembly: str, input_file: str, error: Optional[str]):
+    if service not in VCFSERVICES:
+        raise ValueError(f'unsupported vcf service {service}')
+    submission = Submission(vcfservice.request.id, service=VCFSERVICES[service])
     submission.save()
-    output_file = f'{input_file.split(".", 1)[0]}.{BADMUT}.vcf.gz'
-    service = os.path.join(settings.SERVICES_ROOT, BADMUT, BADMUT + '.sh')
+    output_file = f'{input_file.split(".", 1)[0]}.{service}.vcf.gz'
+    service = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
     command = [service, assembly, input_file, output_file]
     try:
         if error is not None:
