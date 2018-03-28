@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'maintenance_mode',
     'info.apps.InfoConfig',
     'services.apps.ServicesConfig',
+    'annotation.apps.AnnotationConfig'
 ]
 
 MIDDLEWARE = [
@@ -84,8 +85,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'annotation': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'anno.sqlite3'),
     }
 }
+
+DATABASE_ROUTERS = ['labsite.routing.AnnoRouter']
 
 
 # Password validation
