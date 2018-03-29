@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from fn import F
 
+from info.models import Employee
+
 MUTCLASSES = frozenset([
     'UNK', 'ORG', 'CEL', 'PAT', 'PRO', 'MIM', 'ENZ', 'TRA', 'CHA', 'CAR', 'LOC',
     'INT', 'IND'
@@ -13,6 +15,10 @@ MUTCLASSES = frozenset([
 MUTLEVELS = frozenset([
     '--', '!--', '-', '!-', '0', '+', '!+', '++', '!++', 'r', '!r', '?'
 ])
+
+
+def israw(annotation: str) -> bool:
+    return annotation.startswith('[RAW]')
 
 
 def parse_mutagenesis(lines: str):
@@ -47,16 +53,34 @@ def parse_mutagenesis(lines: str):
 
 
 def validate_mutagenesis(value: str):
-    try:
-        parse_mutagenesis(value)
-    except ValueError as err:
-        raise ValidationError(str(err))
+    if not israw(value):
+        try:
+            parse_mutagenesis(value)
+        except ValueError as err:
+            raise ValidationError(str(err))
+
+
+class Annotator(models.Model):
+    name = models.CharField('Name', max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class MutagenesisRecord(models.Model):
-    mutation = models.CharField('Title', max_length=200)
+    name = models.CharField('Title', max_length=200)
     description = models.TextField('Description')
+    by = models.ForeignKey(Annotator, verbose_name='Annotator', null=True, blank=True)
+    completed = models.BooleanField('Completed', default=False)
     subrecords = models.TextField('Subrecords', validators=[validate_mutagenesis])
 
     def __str__(self):
-        return f'{self.mutation} {self.description[:100]}...'
+        return f'{self.name} {self.description}...'
+
+    def clean(self):
+        if self.completed and israw(self.subrecords):
+            raise ValidationError('Conflicting [RAW] and Completed')
+
+
+if __name__ == '__main__':
+    raise RuntimeError
