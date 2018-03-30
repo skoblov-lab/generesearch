@@ -169,6 +169,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+# Redirects
+# LOGIN_REDIRECT_URL = '/'
 
 if __name__ == '__main__':
     raise RuntimeError

@@ -9,8 +9,8 @@ admin.site.register(Annotator)
 
 
 @admin.register(MutagenesisRecord)
-class AnnotatiomAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'by', 'completed')
+class MutagenesisAdmin(admin.ModelAdmin):
+    list_display = ('prot', 'sub', 'description', 'completed')
     search_fields = ('name', 'description', 'completed')
     list_filter = ('completed', 'by')
 

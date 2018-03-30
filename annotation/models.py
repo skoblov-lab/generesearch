@@ -68,14 +68,16 @@ class Annotator(models.Model):
 
 
 class MutagenesisRecord(models.Model):
-    name = models.CharField('Title', max_length=200)
+    prot = models.CharField('Protein', max_length=50)
+    sub = models.CharField('Substitution', max_length=100)
     description = models.TextField('Description')
-    by = models.ForeignKey(Annotator, verbose_name='Annotator', null=True, blank=True)
+    by = models.ForeignKey(Annotator, verbose_name='Annotator', null=True,
+                           on_delete=models.SET_NULL)
     completed = models.BooleanField('Completed', default=False)
     subrecords = models.TextField('Subrecords', validators=[validate_mutagenesis])
 
     def __str__(self):
-        return f'{self.name} {self.description}...'
+        return f'{self.prot}:{self.sub}\t{self.description}...'
 
     def clean(self):
         if self.completed and israw(self.subrecords):
