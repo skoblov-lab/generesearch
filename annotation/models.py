@@ -13,7 +13,7 @@ MUTCLASSES = frozenset([
     'INT', 'IND'
 ])
 MUTLEVELS = frozenset([
-    '--', '!--', '-', '!-', '0', '+', '!+', '++', '!++', 'r', '!r', '?'
+    '--', '-', '0', '+', '++', 'r', '?'
 ])
 
 
@@ -37,9 +37,10 @@ def parse_mutagenesis(lines: str):
             raise ValueError(f'Incorrect annotation format: {line}')
 
         lvl, target, assoc = (
-            [val if val != '?' else None for val in spec] + [None]*(3-len(spec))
+            [val if val.lstrip('!') != '?' else None for val in spec] +
+            [None]*(3-len(spec))
         )
-        if lvl and lvl not in MUTLEVELS:
+        if lvl and lvl.lstrip('!') not in MUTLEVELS:
             raise ValueError(f'Unsupported effect level: {lvl}')
         return recs[-1].append([cls.upper(), lvl, target, assoc]) or recs
     subrecords = OrderedDict((entry, anno) for entry, *anno in reduce(
