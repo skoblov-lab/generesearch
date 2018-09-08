@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'labsite.context_processors.google_analytics'
             ],
         },
     },
@@ -168,6 +169,10 @@ CELERY_IGNORE_RESULT = False
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# Google analytics
+GOOGLE_ANALYTICS_PROPERTY_ID = CONFIGS['GOOGLE_ANALYTICS_PROPERTY_ID']
+GOOGLE_ANALYTICS_DOMAIN = CONFIGS['GOOGLE_ANALYTICS_DOMAIN']
 
 # Redirects
 # LOGIN_REDIRECT_URL = '/'
