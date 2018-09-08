@@ -27,9 +27,7 @@
 
 <body>
 
-{% if GOOGLE_ANALYTICS_PROPERTY_ID %}
-    {% include 'ga.html' %}
-{% endif %}
+{% if GOOGLE_ANALYTICS_PROPERTY_ID %} {% include 'ga.html' %} {% endif %}
 
 <!-- Navigation bar -->
 {% include 'navbar.html' %}
