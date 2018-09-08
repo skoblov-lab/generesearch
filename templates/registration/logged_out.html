@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="d-flex flex-row justify-content-center my-4">
+            <p>Logged out!
+                <a href="{% url 'login' %}">Click here to login again.</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

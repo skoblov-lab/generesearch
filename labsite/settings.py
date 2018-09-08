@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'maintenance_mode',
     'info.apps.InfoConfig',
     'services.apps.ServicesConfig',
+    'annotation.apps.AnnotationConfig'
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'labsite.context_processors.google_analytics'
             ],
         },
     },
@@ -84,8 +86,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'annotation': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'anno.sqlite3'),
     }
 }
+
+DATABASE_ROUTERS = ['labsite.routing.AnnoRouter']
 
 
 # Password validation
@@ -162,6 +170,12 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+# Google analytics
+GOOGLE_ANALYTICS_PROPERTY_ID = CONFIGS['GOOGLE_ANALYTICS_PROPERTY_ID']
+GOOGLE_ANALYTICS_DOMAIN = CONFIGS['GOOGLE_ANALYTICS_DOMAIN']
+
+# Redirects
+# LOGIN_REDIRECT_URL = '/'
 
 if __name__ == '__main__':
     raise RuntimeError
