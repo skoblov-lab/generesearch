@@ -70,13 +70,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'labsite.context_processors.google_analytics'
             ],
         },
     },
-]
-
-TEMPLATE_CONTEXT_PROCESSORS = [
-    'labsite.context_processors.google_analytics'
 ]
 
 WSGI_APPLICATION = 'labsite.wsgi.application'
