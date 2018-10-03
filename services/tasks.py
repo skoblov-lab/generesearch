@@ -1,17 +1,17 @@
-from contextlib import suppress
 import datetime
 import os
 import subprocess as sp
-from typing import Optional
+from contextlib import suppress
 
 import pytz
 from celery import shared_task
+from celery.result import AsyncResult
 from celery.schedules import crontab
 from celery.task import periodic_task
-from celery.result import AsyncResult
 from django.conf import settings
 
 from services.models import ERROR, READY, Submission
+from services.optional import Callable, ExceptionalOptional
 
 OUTPUT = 'output'
 BADMUT = 'badmut'
@@ -22,12 +22,8 @@ VCFSERVICES = {
 }
 
 
-class InputValidationError(ValueError):
-    pass
-
-
 @shared_task
-def vcfservice(service, assembly: str, input_file: str, error: Optional[str]):
+def vcfservice(service, assembly: str, input_file: str, error):  # error: Optional[str]
     if service not in VCFSERVICES:
         raise ValueError(f'unsupported vcf service {service}')
     submission = Submission(vcfservice.request.id, service=VCFSERVICES[service])
@@ -51,6 +47,17 @@ def vcfservice(service, assembly: str, input_file: str, error: Optional[str]):
         submission.save()
         with suppress(FileNotFoundError, TypeError):
             os.remove(input_file)
+
+
+@shared_task
+def service(action: Callable[..., ExceptionalOptional[str]], *args, **kwargs):
+    submission = Submission(service.request.id, service=VCFSERVICES[service])
+    submission.save()
+    result = action(*args, **kwargs)
+    submission.status = READY if result else ERROR
+    submission.response = result.value if result else None
+    submission.message = 'Done!' if result else str(result.exception)
+    submission.save()
 
 
 # @periodic_task(run_every=crontab(minute=0, hour='*/1'))
