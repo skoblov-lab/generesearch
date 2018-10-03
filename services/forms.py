@@ -4,7 +4,10 @@ from itertools import chain
 
 HG19 = '19'
 HG38 = '38'
+VCF = 'vcf'
+TSV = 'tsv'
 ASSEMBLIES = ((HG38,)*2, (HG19,)*2)
+OUTPUT_FORMATS = ((VCF,) * 2, (TSV,) * 2)
 NUCLEOTIDES = (
     ('A', 'A'),
     ('C', 'C'),
@@ -16,13 +19,17 @@ CHROMOSOMES = tuple(
 )
 
 
-class AssemblyForm(forms.Form):
+class BaseAnnotationServiceForm(forms.Form):
     assembly = forms.CharField(widget=forms.Select(choices=ASSEMBLIES),
-                               label="Human genome assembly version",
+                               label='Human genome assembly version',
                                max_length=2, required=True)
+    output_format = forms.CharField(widget=forms.Select(choices=OUTPUT_FORMATS),
+                                    label='Output format',
+                                    max_length=3, required=True)
+    compress = forms.BooleanField(initial=True, label='Compress the output')
 
 
-class PointForm(AssemblyForm):
+class PointAnnotationForm(BaseAnnotationServiceForm):
     chrom = forms.CharField(widget=forms.Select(choices=CHROMOSOMES),
                             required=True, max_length=3,
                             label='Chromosome')
@@ -30,7 +37,7 @@ class PointForm(AssemblyForm):
                              min_value=1)
 
 
-class AlleleForm(PointForm):
+class AlleleAnnotationForm(PointAnnotationForm):
     ref = forms.CharField(label='Reference',
                           widget=forms.Select(choices=NUCLEOTIDES),
                           max_length=1, required=True)
@@ -39,5 +46,9 @@ class AlleleForm(PointForm):
                           max_length=1, required=True)
 
 
-class BulkForm(AssemblyForm):
+class VcfAnnotationForm(BaseAnnotationServiceForm):
     file = forms.FileField(required=True, label='Input file')
+
+
+if __name__ == '__main__':
+    raise RuntimeError
