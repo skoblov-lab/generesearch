@@ -3,7 +3,7 @@ import os
 import subprocess as sp
 import tempfile
 from collections import OrderedDict
-from typing import Mapping, Optional
+from typing import Mapping, Optional, Any
 
 import pandas as pd
 from django.conf import settings
@@ -37,7 +37,7 @@ def convert_point_vcf(rec: "a PyVCF record") -> pd.DataFrame:
 # TODO replace the `badmut`/`mirna` copy-paste job with a generic solution
 
 @optional.fallible(Exception)
-def badmut(fields: Mapping[str, Optional]) -> str:
+def badmut(fields: Mapping[str, Optional[Any]]) -> str:
     form_type = fields.get(FORM_TYPE) or ''
     if form_type == AlleleAnnotationForm.__name__:
         # create a temporary input file
