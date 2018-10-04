@@ -7,7 +7,7 @@ from django.urls import reverse
 from services.forms import BaseAnnotationServiceForm, PointAnnotationForm, \
     AlleleAnnotationForm, VcfAnnotationForm
 from services.models import Submission
-from services.tasks import ServiceAction, annotation_service
+from services import tasks
 
 SUBMISSIONS = 'submissions'
 FORM_SERVICE_TAG = 'service'
@@ -33,15 +33,17 @@ def bind_service_form(request: HttpRequest) \
     return None if form is None else form(request.POST, request.FILES)
 
 
-def make_annotation_service_view(action: ServiceAction, template: str,
+def make_annotation_service_view(action: tasks.ServiceAction, template: str,
                                  blank_forms: Callable):
 
     def view(request):
         if request.method == 'POST':
             form = bind_service_form(request)
             if form is not None and form.is_valid():
+                with open('/home/test.txt', 'w') as out:
+                    print('valid', file=out)
                 # bind task ID to user's submissions
-                submission = annotation_service.delay(action, form)
+                submission = tasks.annotation_service.delay(action, form)
                 request.session.setdefault(SUBMISSIONS, []).append(submission)
                 request.session.modified = True
                 return HttpResponseRedirect(reverse('submissions'))
