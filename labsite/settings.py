@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import json
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -146,9 +147,16 @@ MAINTENANCE_MODE_STATE_FILE_PATH = os.path.join(BASE_DIR,
 # Service commands
 SERVICES_ROOT = CONFIGS['SERVICES_ROOT']
 if not os.path.isabs(SERVICES_ROOT):
-    raise ValueError('the GENERESEARCH_SERVICES env variable is not an abspath')
+    raise ValueError('the SERVICES_ROOT config variable is not an abspath')
 # SUBMISSION_LIFESPAN_SECONDS = 60 * 60 * 24 * 2  # two days
 SUBMISSION_LIFESPAN_SECONDS = CONFIGS["SUBMISSION_LIFESPAN_SECONDS"]
+
+# Service specific configs
+with open(CONFIGS['VCF_TEMPLATE_PATH']) as buffer:
+    VCF_TEMPLATE = buffer.read()
+# TODO use a system-wide executable
+BADMUT_EXEC = os.path.join(SERVICES_ROOT, 'badmut', 'badmut.sh')
+MIRNA_EXEC = os.path.join(SERVICES_ROOT, 'mirna', 'mirna.sh')
 
 # Media
 MEDIA_URL = '/media/'
@@ -176,6 +184,7 @@ GOOGLE_ANALYTICS_DOMAIN = CONFIGS['GOOGLE_ANALYTICS_DOMAIN']
 
 # Redirects
 # LOGIN_REDIRECT_URL = '/'
+
 
 if __name__ == '__main__':
     raise RuntimeError

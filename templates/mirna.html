@@ -11,17 +11,44 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#point">
+                        Process a single allele
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#bulk">
                         Process a VCF query
                     </a>
                 </li>
             </ul>
             <div id="myTabContent" class="tab-content">
+                <!-- About tab -->
                 <div class="tab-pane fade active show" id="about">
                     <div class="container my-4">
                         {% include 'mirna_about.html' %}
                     </div>
                 </div>
+                <!-- Point submission tab -->
+                <div class="tab-pane fade" id="point">
+                    <p class="text-justify text-primary my-4">
+                        This tab allows you to submit a single point at a time.
+                        While you can make as many of these submissions as you
+                        want, if you have more than a dozen of alleles to
+                        process, you should consider the VCF submission form
+                        instead.
+                    </p>
+                    <form role="form" method="post"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="service" value="point_form">
+                        {{ point_form.as_p }}
+                        <button type="submit" name="point_form"
+                                class="btn btn-primary bg-dark">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+                <!-- VCF submission tab -->
                 <div class="tab-pane fade" id="bulk">
                     <p class="text-justify text-primary my-4">
                         You can upload and process any VCF file (v4.0 or
@@ -35,8 +62,9 @@
                     <form role="form" method="post"
                           enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ bulk_form.as_p }}
-                        <button type="submit" name="bulk-form"
+                        <input type="hidden" name="service" value="vcf_form">
+                        {{ vcf_form.as_p }}
+                        <button type="submit" name="vcf_form"
                                 class="btn btn-primary bg-dark">
                             Submit
                         </button>

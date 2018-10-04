@@ -1,105 +1,69 @@
-import os
-import tempfile
-from typing import Union
+from typing import Optional, Callable
 
-from celery import result
-from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import render
 from django.urls import reverse
-from multipledispatch import dispatch
 
-from services.forms import AlleleForm, BulkForm
-from services.models import Submission
+from services import optional
 from services import tasks
+from services.forms import BaseAnnotationServiceForm, PointAnnotationForm, \
+    AlleleAnnotationForm, VcfAnnotationForm
+from services.models import Submission
 
 SUBMISSIONS = 'submissions'
-
-BULK = 'bulk-form'
-VCF_TEMPLATE = """##fileformat=VCFv4.1
-#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT
-{}\t{}\t.\t{}\t{}\t.\t.\t.\t."""
-
-
-@dispatch(BulkForm)
-def bmsubmit(form: BulkForm) -> str:
-    """
-    Submit a bulk BadMut query
-    :param form: a bound form
-    :return:
-    """
-    upload = form.cleaned_data['file']
-    assembly = form.cleaned_data['assembly']
-    filepath = os.path.join(settings.MEDIA_ROOT, upload.name)
-    return tasks.vcfservice.delay(
-        tasks.BADMUT, assembly, filepath, upload.error).task_id
+FORM_SERVICE_TAG = 'service'
+POINT_FORM = 'point_form'
+ALLELE_FORM = 'allele_form'
+VCF_FORM = 'vcf_form'
+ANNOTATION_SERVICE_FORM_MAP = {
+    POINT_FORM: PointAnnotationForm,
+    ALLELE_FORM: AlleleAnnotationForm,
+    VCF_FORM: VcfAnnotationForm
+}
 
 
-@dispatch(AlleleForm)
-def bmsubmit(form: AlleleForm) -> str:
-    """
-    Submit a point BadMut query
-    :param form: a bound form
-    :return:
-    """
-    data = form.cleaned_data
-    assembly, chrom, pos, ref, alt = [
-        data[key] for key in ('assembly', 'chrom', 'pos', 'ref', 'alt')
-    ]
-    with tempfile.NamedTemporaryFile(mode='w', dir=settings.MEDIA_ROOT,
-                                     delete=False, suffix='.upload.vcf') as out:
-        print(VCF_TEMPLATE.format(chrom, pos, ref, alt), file=out)
-        filepath = out.name
-    return tasks.vcfservice.delay(
-        tasks.BADMUT, assembly, filepath, None).task_id
-
-
-@dispatch(BulkForm)
-def mirnasubmit(form: BulkForm) -> str:
-    """
-    Submit a bulk miRNA query
-    :param form: a bound form
-    :return:
-    """
-    upload = form.cleaned_data['file']
-    assembly = form.cleaned_data['assembly']
-    filepath = os.path.join(settings.MEDIA_ROOT, upload.name)
-    return tasks.vcfservice.delay(
-        tasks.MIRNA, assembly, filepath, upload.error).task_id
-
-
-def bind(request) -> Union[BulkForm, AlleleForm]:
+def bind_service_form(request: HttpRequest) \
+        -> Optional[BaseAnnotationServiceForm]:
     """
     Bind a request to a form
     :param request:
     :return:
     """
-    form = (BulkForm if any(key.startswith(BULK) for key in request.POST) else
-            AlleleForm)
-    return form(request.POST, request.FILES)
+    service_tag = str(request.POST.get(FORM_SERVICE_TAG))
+    form = ANNOTATION_SERVICE_FORM_MAP.get(service_tag)
+    return None if form is None else form(request.POST, request.FILES)
 
 
-def badmut_service(request):
-    if request.method == 'POST':
-        form = bind(request)
-        if form.is_valid():
-            # bind task ID to user's submissions
-            request.session.setdefault(SUBMISSIONS, []).append(bmsubmit(form))
-            request.session.modified = True
-            return HttpResponseRedirect(reverse('submissions'))
-    return render(request, 'badmut.html',
-                  {'allele_form': AlleleForm(), 'bulk_form': BulkForm()})
+def make_annotation_service_view(action: optional.ServiceAction, template: str,
+                                 blank_forms: Callable):
+
+    def view(request):
+        if request.method == 'POST':
+            form = bind_service_form(request)
+            if form is not None and form.is_valid():
+                # bind task ID to user's submissions
+                # TODO this will fail if action does not have a proper name
+                # TODO or if it is not added to actions.ACTIONS dictionary
+                submission = tasks.annotation_service.delay(
+                    action.__name__, form.serialise_fields()
+                )
+                request.session.setdefault(SUBMISSIONS, []).append(submission.task_id)
+                request.session.modified = True
+                return HttpResponseRedirect(reverse('submissions'))
+
+        return render(request, template, blank_forms())
+
+    return view
 
 
-def mirna_service(request):
-    if request.method == 'POST':
-        form = bind(request)
-        if form.is_valid():
-            # bind task ID to user's submissions
-            request.session.setdefault(SUBMISSIONS, []).append(mirnasubmit(form))
-            request.session.modified = True
-            return HttpResponseRedirect(reverse('submissions'))
-    return render(request, 'mirna.html', {'bulk_form': BulkForm()})
+def make_blank_badmut_forms():
+    return {ALLELE_FORM: AlleleAnnotationForm(), VCF_FORM: VcfAnnotationForm()}
+
+
+def make_blank_mirna_forms():
+    # point_form = PointAnnotationForm(
+    #     initial={'compress': False, 'output_format': TSV})
+    return {POINT_FORM: PointAnnotationForm(), VCF_FORM: VcfAnnotationForm()}
 
 
 def submissions(request):

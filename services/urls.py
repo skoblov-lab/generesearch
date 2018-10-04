@@ -1,12 +1,22 @@
-from django.conf import settings
-from django.conf.urls import url, include
-from django.views.generic import TemplateView
-from django.views.static import serve
+from django.conf.urls import url
 
-from . import views
+from services import actions
+from services import views
+
+badmut_view = views.make_annotation_service_view(
+    actions.badmut,
+    'badmut.html',
+    views.make_blank_badmut_forms
+)
+
+mirna_view = views.make_annotation_service_view(
+    actions.mirna,
+    'mirna.html',
+    views.make_blank_mirna_forms
+)
 
 urlpatterns = [
-    url(r'^badmut/$', views.badmut_service, name='badmut'),
-    url(r'^mirna/$', views.mirna_service, name='mirna'),
+    url(r'^badmut/$', badmut_view, name='badmut'),
+    url(r'^mirna/$', mirna_view, name='mirna'),
     url(r'^submissions/$', views.submissions, name='submissions'),
 ]

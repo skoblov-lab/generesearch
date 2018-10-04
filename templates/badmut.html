@@ -11,8 +11,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab"
-                       href="#point">
+                    <a class="nav-link" data-toggle="tab" href="#point">
                         Process a single allele
                     </a>
                 </li>
@@ -23,11 +22,13 @@
                 </li>
             </ul>
             <div id="myTabContent" class="tab-content">
+                <!-- About tab -->
                 <div class="tab-pane fade active show" id="about">
                     <div class="container my-4">
                         {% include 'badmut_about.html' %}
                     </div>
                 </div>
+                <!-- Allele submission tab -->
                 <div class="tab-pane fade" id="point">
                     <p class="text-justify text-primary my-4">
                         This tab allows you to submit a single allele at a time.
@@ -40,13 +41,15 @@
                     <form role="form" method="post"
                           enctype="multipart/form-data">
                         {% csrf_token %}
+                        <input type="hidden" name="service" value="allele_form">
                         {{ allele_form.as_p }}
-                        <button type="submit" name="allele-form"
+                        <button type="submit" name="allele_form"
                                 class="btn btn-primary bg-dark">
                             Submit
                         </button>
                     </form>
                 </div>
+                <!-- VCF submission tab -->
                 <div class="tab-pane fade" id="bulk">
                     <p class="text-justify text-primary my-4">
                         You can upload and process any VCF file (v4.0 or
@@ -59,9 +62,10 @@
                     </p>
                     <form role="form" method="post"
                           enctype="multipart/form-data">
+                         <input type="hidden" name="service" value="vcf_form">
                         {% csrf_token %}
-                        {{ bulk_form.as_p }}
-                        <button type="submit" name="bulk-form"
+                        {{ vcf_form.as_p }}
+                        <button type="submit" name="vcf_form"
                                 class="btn btn-primary bg-dark">
                             Submit
                         </button>
