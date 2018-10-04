@@ -6,13 +6,13 @@ from services import views
 badmut_view = views.make_annotation_service_view(
     actions.badmut,
     'badmut.html',
-    views.make_blank_badmut_forms()
+    views.make_blank_badmut_forms
 )
 
 mirna_view = views.make_annotation_service_view(
     actions.mirna,
     'mirna.html',
-    views.make_blank_mirna_forms()
+    views.make_blank_mirna_forms
 )
 
 urlpatterns = [
