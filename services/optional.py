@@ -33,6 +33,9 @@ class OptionalServiceResult(Generic[A]):
         return self._value if self.failed else None
 
 
+ServiceAction = Callable[..., OptionalServiceResult[str]]
+
+
 def fallible(*exceptions, logger=None) \
         -> Callable[[Callable[..., A]], Callable[..., OptionalServiceResult[A]]]:
     """

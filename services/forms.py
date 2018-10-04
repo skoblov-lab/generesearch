@@ -1,6 +1,7 @@
-from django import forms
 from itertools import chain
+from typing import Mapping, Optional
 
+from django import forms
 
 HG19 = '19'
 HG38 = '38'
@@ -17,6 +18,13 @@ NUCLEOTIDES = (
 CHROMOSOMES = tuple(
     (chrom, chrom) for chrom in map(str, chain(range(1, 23), 'MXY'))
 )
+ASSEMBLY = 'assembly'
+CHROM = 'chrom'
+POS = 'pos'
+REF = 'ref'
+ALT = 'alt'
+FILE = 'file'
+FORM_TYPE = 'form_type'
 
 
 class BaseAnnotationServiceForm(forms.Form):
@@ -28,6 +36,15 @@ class BaseAnnotationServiceForm(forms.Form):
     #                                 max_length=3, required=True)
     # compress = forms.BooleanField(initial=True, label='Compress the output')
 
+    def fields(self) -> Mapping[str, Optional]:
+        """
+        Making forms serialisable for Celery by extracting relevant fields and
+        packing them into a dictionary
+        :return:
+        """
+        return {FORM_TYPE: type(self).__name__,
+                ASSEMBLY: self.cleaned_data[ASSEMBLY]}
+
 
 class PointAnnotationForm(BaseAnnotationServiceForm):
     chrom = forms.CharField(widget=forms.Select(choices=CHROMOSOMES),
@@ -35,6 +52,10 @@ class PointAnnotationForm(BaseAnnotationServiceForm):
                             label='Chromosome')
     pos = forms.IntegerField(required=True, label='Position (1-based)',
                              min_value=1)
+
+    def fields(self):
+        data = self.cleaned_data
+        return {CHROM: data[CHROM], POS: data[POS], **super().fields()}
 
 
 class AlleleAnnotationForm(PointAnnotationForm):
@@ -45,9 +66,19 @@ class AlleleAnnotationForm(PointAnnotationForm):
                           widget=forms.Select(choices=NUCLEOTIDES),
                           max_length=1, required=True)
 
+    def fields(self):
+        data = self.cleaned_data
+        return {REF: data[REF], ALT: data[ALT], **super().fields()}
+
 
 class VcfAnnotationForm(BaseAnnotationServiceForm):
     file = forms.FileField(required=True, label='Input file')
+
+    def fields(self):
+        data = self.cleaned_data
+        upload = data[FILE]
+        return {FILE: (None if upload.error else upload.name),
+                **super().fields()}
 
 
 if __name__ == '__main__':

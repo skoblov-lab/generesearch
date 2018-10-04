@@ -8,6 +8,7 @@ from services.forms import BaseAnnotationServiceForm, PointAnnotationForm, \
     AlleleAnnotationForm, VcfAnnotationForm
 from services.models import Submission
 from services import tasks
+from services import optional
 
 SUBMISSIONS = 'submissions'
 FORM_SERVICE_TAG = 'service'
@@ -33,7 +34,7 @@ def bind_service_form(request: HttpRequest) \
     return None if form is None else form(request.POST, request.FILES)
 
 
-def make_annotation_service_view(action: tasks.ServiceAction, template: str,
+def make_annotation_service_view(action: optional.ServiceAction, template: str,
                                  blank_forms: Callable):
 
     def view(request):
@@ -41,8 +42,11 @@ def make_annotation_service_view(action: tasks.ServiceAction, template: str,
             form = bind_service_form(request)
             if form is not None and form.is_valid():
                 # bind task ID to user's submissions
-                submission = tasks.annotation_service.delay(action, form)
-
+                # TODO this will fail if action does not have a proper name
+                # TODO or if it is not added to actions.ACTIONS dictionary
+                submission = tasks.annotation_service.delay(
+                    action.__name__, form.fields()
+                )
                 request.session.setdefault(SUBMISSIONS, []).append(submission)
                 request.session.modified = True
                 return HttpResponseRedirect(reverse('submissions'))

@@ -1,6 +1,5 @@
 import datetime
 import os
-import subprocess as sp
 from contextlib import suppress
 
 import pytz
@@ -10,8 +9,8 @@ from celery.schedules import crontab
 from celery.task import periodic_task
 from django.conf import settings
 
+from services import actions
 from services.models import ERROR, READY, Submission
-from services.optional import Callable, OptionalServiceResult
 
 OUTPUT = 'output'
 BADMUT = 'badmut'
@@ -20,7 +19,6 @@ VCFSERVICES = {
     BADMUT: 'BadMut',
     MIRNA: 'miRNA'
 }
-ServiceAction = Callable[..., OptionalServiceResult[str]]
 
 
 # @shared_task
@@ -51,12 +49,9 @@ ServiceAction = Callable[..., OptionalServiceResult[str]]
 
 
 @shared_task
-def annotation_service(action: ServiceAction, *args, **kwargs):
-    try:
-        service_name = action.__name__
-    except (TypeError, AttributeError):
-        service_name = str(action)
-    submission = Submission(annotation_service.request.id, service=service_name)
+def annotation_service(action_name: str, *args, **kwargs):
+    action = actions.ACTIONS[action_name]
+    submission = Submission(annotation_service.request.id, service=action_name)
     submission.save()
     result = action(*args, **kwargs)
     submission.status = READY if result else ERROR
