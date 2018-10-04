@@ -1,5 +1,5 @@
 from itertools import chain
-from typing import Mapping, Optional
+from typing import Mapping, Optional, Any
 
 from django import forms
 
@@ -36,7 +36,7 @@ class BaseAnnotationServiceForm(forms.Form):
     #                                 max_length=3, required=True)
     # compress = forms.BooleanField(initial=True, label='Compress the output')
 
-    def fields(self) -> Mapping[str, Optional]:
+    def fields(self) -> Mapping[str, Optional[Any]]:
         """
         Making forms serialisable for Celery by extracting relevant fields and
         packing them into a dictionary
