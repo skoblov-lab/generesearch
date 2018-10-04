@@ -25,4 +25,4 @@
 ##contig=<ID=chrY>
 ##contig=<ID=chrM>
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT
-{chrom}	{pos}	.	{ref}	{alt}	.	.	.	.	.
+{chrom}	{pos}	.	{ref}	{alt}	.	.	.	.

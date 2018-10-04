@@ -2,6 +2,7 @@ import gzip
 import os
 import subprocess as sp
 import tempfile
+import logging
 from collections import OrderedDict
 from typing import Mapping, Optional, Any
 
@@ -58,12 +59,12 @@ def badmut(fields: Mapping[str, Optional[Any]]) -> str:
     command = [settings.BADMUT_EXEC, assembly, inpath, outpath]
     try:
         sp.run(command, check=True, stderr=sp.PIPE)
-    except (sp.CalledProcessError, ValueError):
+    except (sp.CalledProcessError, ValueError) as err:
+        logging.exception(err)
         raise ValueError('Invalid file format')
     # convert point VCF output into a TSV file
     if form_type == AlleleAnnotationForm.__name__:
-        with gzip.open(outpath, 'rt') as buffer:
-            record = convert_point_vcf(next(Reader(buffer)))
+        record = convert_point_vcf(next(Reader(filename=outpath, compressed=True)))
         result = f'{".".join(outpath.split(".")[:-2])}.tsv'
         record.to_csv(result, sep='\t', index=False)
         # remove the VCF output
@@ -98,8 +99,7 @@ def mirna(fields: Mapping[str, Optional[Any]]) -> str:
         raise ValueError('Invalid file format')
     # convert point VCF output into a TSV file
     if form_type == PointAnnotationForm.__name__:
-        with gzip.open(outpath, 'rt') as buffer:
-            record = convert_point_vcf(next(Reader(buffer)))
+        record = convert_point_vcf(next(Reader(filename=outpath, compressed=True)))
         result = f'{".".join(outpath.split(".")[:-2])}.tsv'
         record.to_csv(result, sep='\t', index=False)
         # remove the VCF output

@@ -36,7 +36,7 @@ class BaseAnnotationServiceForm(forms.Form):
     #                                 max_length=3, required=True)
     # compress = forms.BooleanField(initial=True, label='Compress the output')
 
-    def fields(self) -> Mapping[str, Optional[Any]]:
+    def serialise_fields(self) -> Mapping[str, Optional[Any]]:
         """
         Making forms serialisable for Celery by extracting relevant fields and
         packing them into a dictionary
@@ -53,9 +53,9 @@ class PointAnnotationForm(BaseAnnotationServiceForm):
     pos = forms.IntegerField(required=True, label='Position (1-based)',
                              min_value=1)
 
-    def fields(self):
+    def serialise_fields(self):
         data = self.cleaned_data
-        return {CHROM: data[CHROM], POS: data[POS], **super().fields()}
+        return {CHROM: data[CHROM], POS: data[POS], **super().serialise_fields()}
 
 
 class AlleleAnnotationForm(PointAnnotationForm):
@@ -66,19 +66,19 @@ class AlleleAnnotationForm(PointAnnotationForm):
                           widget=forms.Select(choices=NUCLEOTIDES),
                           max_length=1, required=True)
 
-    def fields(self):
+    def serialise_fields(self):
         data = self.cleaned_data
-        return {REF: data[REF], ALT: data[ALT], **super().fields()}
+        return {REF: data[REF], ALT: data[ALT], **super().serialise_fields()}
 
 
 class VcfAnnotationForm(BaseAnnotationServiceForm):
     file = forms.FileField(required=True, label='Input file')
 
-    def fields(self):
+    def serialise_fields(self):
         data = self.cleaned_data
         upload = data[FILE]
         return {FILE: (None if upload.error else upload.name),
-                **super().fields()}
+                **super().serialise_fields()}
 
 
 if __name__ == '__main__':
