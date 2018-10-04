@@ -40,10 +40,9 @@ def make_annotation_service_view(action: tasks.ServiceAction, template: str,
         if request.method == 'POST':
             form = bind_service_form(request)
             if form is not None and form.is_valid():
-                with open('/home/test.txt', 'w') as out:
-                    print('valid', file=out)
                 # bind task ID to user's submissions
                 submission = tasks.annotation_service.delay(action, form)
+
                 request.session.setdefault(SUBMISSIONS, []).append(submission)
                 request.session.modified = True
                 return HttpResponseRedirect(reverse('submissions'))
