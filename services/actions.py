@@ -11,7 +11,7 @@ from vcf import Reader
 
 from services import optional
 from services.forms import VcfAnnotationForm, AlleleAnnotationForm, \
-    ASSEMBLY, CHROM, POS, REF, ALT, FILE, FORM_TYPE
+    PointAnnotationForm, ASSEMBLY, CHROM, POS, REF, ALT, FILE, FORM_TYPE
 
 
 def genvcf(suffix, chrom, pos, ref, alt) -> str:
@@ -41,10 +41,8 @@ def badmut(fields: Mapping[str, Optional[Any]]) -> str:
     form_type = fields.get(FORM_TYPE) or ''
     if form_type == AlleleAnnotationForm.__name__:
         # create a temporary input file
-        chrom, pos, ref, alt = [
-            fields[key] for key in (CHROM, POS, REF, ALT)
-        ]
-        inpath = genvcf('.upload.vcf', chrom, pos, ref, alt)
+        inpath = genvcf('.upload.vcf', fields[CHROM], fields[POS], fields[REF],
+                        fields[ALT])
     elif form_type == VcfAnnotationForm.__name__:
         # make sure the upload is ok
         upload = fields[FILE]
@@ -75,10 +73,46 @@ def badmut(fields: Mapping[str, Optional[Any]]) -> str:
     return result
 
 
+@optional.fallible(Exception)
+def mirna(fields: Mapping[str, Optional[Any]]) -> str:
+    form_type = fields.get(FORM_TYPE) or ''
+    if form_type == PointAnnotationForm.__name__:
+        # create a temporary input file
+        inpath = genvcf('.upload.vcf', fields[CHROM], fields[POS], '.', '.')
+    elif form_type == VcfAnnotationForm.__name__:
+        # make sure the upload is ok
+        upload = fields[FILE]
+        if not upload:
+            raise ValueError('Upload error')
+        inpath = os.path.join(settings.MEDIA_ROOT, upload)
+    # make sure the functions didn't receive an unexpected form
+    else:
+        raise ValueError('Invalid form')
+    # run the tool
+    assembly = fields[ASSEMBLY]
+    outpath = f'{inpath.split(".", 1)[0]}.mirna.vcf.gz'
+    command = [settings.MIRNA_EXEC, assembly, inpath, outpath]
+    try:
+        sp.run(command, check=True, stderr=sp.PIPE)
+    except (sp.CalledProcessError, ValueError):
+        raise ValueError('Invalid file format')
+    # convert point VCF output into a TSV file
+    if form_type == PointAnnotationForm.__name__:
+        with gzip.open(outpath, 'rt') as buffer:
+            record = convert_point_vcf(next(Reader(buffer)))
+        result = f'{".".join(outpath.split(".")[:-2])}.tsv'
+        record.to_csv(result, sep='\t', index=False)
+        # remove the VCF output
+        os.remove(outpath)
+    else:
+        result = outpath
+    return result
+
+
 # Can't pass
 ACTIONS: Mapping[str, optional.ServiceAction] = {
     badmut.__name__: badmut,
-    # mirna.__name__: mirna
+    mirna.__name__: mirna
 }
 
 # def bmsubmit_vcf(form: VcfAnnotationForm) -> str:
