@@ -35,9 +35,9 @@
                     <form role="form" method="post"
                           enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="hidden" name="service" value="point-form">
-                        {{ allele_form.as_p }}
-                        <button type="submit" name="point-form"
+                        <input type="hidden" name="service" value="point_form">
+                        {{ point_form.as_p }}
+                        <button type="submit" name="point_form"
                                 class="btn btn-primary bg-dark">
                             Submit
                         </button>
@@ -57,9 +57,9 @@
                     <form role="form" method="post"
                           enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="hidden" name="service" value="vcf-form">
-                        {{ bulk_form.as_p }}
-                        <button type="submit" name="vcf-form"
+                        <input type="hidden" name="service" value="vcf_form">
+                        {{ vcf_form.as_p }}
+                        <button type="submit" name="vcf_form"
                                 class="btn btn-primary bg-dark">
                             Submit
                         </button>

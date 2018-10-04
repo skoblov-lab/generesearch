@@ -29,7 +29,7 @@
                         {% include 'badmut_about.html' %}
                     </div>
                 </div>
-                <!-- Point submission tab -->
+                <!-- Allele submission tab -->
                 <div class="tab-pane fade" id="point">
                     <p class="text-justify text-primary my-4">
                         This tab allows you to submit a single allele at a time.
@@ -42,9 +42,9 @@
                     <form role="form" method="post"
                           enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="hidden" name="service" value="allele-form">
+                        <input type="hidden" name="service" value="allele_form">
                         {{ allele_form.as_p }}
-                        <button type="submit" name="allele-form"
+                        <button type="submit" name="allele_form"
                                 class="btn btn-primary bg-dark">
                             Submit
                         </button>
@@ -63,10 +63,10 @@
                     </p>
                     <form role="form" method="post"
                           enctype="multipart/form-data">
-                         <input type="hidden" name="service" value="vcf-form">
+                         <input type="hidden" name="service" value="vcf_form">
                         {% csrf_token %}
-                        {{ bulk_form.as_p }}
-                        <button type="submit" name="vcf-form"
+                        {{ vcf_form.as_p }}
+                        <button type="submit" name="vcf_form"
                                 class="btn btn-primary bg-dark">
                             Submit
                         </button>

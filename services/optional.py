@@ -10,10 +10,7 @@ class InputValidationError(ValueError):
 A = TypeVar('A')
 
 
-class ExceptionalOptional(Generic[A]):
-    """
-    Pun intended 
-    """
+class OptionalServiceResult(Generic[A]):
 
     def __init__(self, value: Union[A, BaseException]):
         self._value = value
@@ -37,25 +34,25 @@ class ExceptionalOptional(Generic[A]):
 
 
 def fallible(*exceptions, logger=None) \
-        -> Callable[[Callable[..., A]], Callable[..., Optional[A]]]:
+        -> Callable[[Callable[..., A]], Callable[..., OptionalServiceResult[A]]]:
     """
     :param exceptions: a list of exceptions to catch
     :param logger: pass a custom logger; None means the default logger,
                    False disables logging altogether.
     """
-    def fwrap(f: Callable[..., A]) -> Callable[..., ExceptionalOptional[A]]:
+    def fwrap(f: Callable[..., A]) -> Callable[..., OptionalServiceResult[A]]:
 
         @wraps(f)
         def wrapped(*args, **kwargs):
             try:
-                return ExceptionalOptional(f(*args, **kwargs))
+                return OptionalServiceResult(f(*args, **kwargs))
             except exceptions as err:
                 message = f'called {f} with *args={args} and **kwargs={kwargs}'
                 if logger:
                     logger.exception(message)
                 if logger is None:
                     logging.exception(message)
-                return ExceptionalOptional(err)
+                return OptionalServiceResult(err)
 
         return wrapped
 

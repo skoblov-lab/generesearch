@@ -11,7 +11,7 @@ from celery.task import periodic_task
 from django.conf import settings
 
 from services.models import ERROR, READY, Submission
-from services.optional import Callable, ExceptionalOptional
+from services.optional import Callable, OptionalServiceResult
 
 OUTPUT = 'output'
 BADMUT = 'badmut'
@@ -20,38 +20,43 @@ VCFSERVICES = {
     BADMUT: 'BadMut',
     MIRNA: 'miRNA'
 }
+ServiceAction = Callable[..., OptionalServiceResult[str]]
+
+
+# @shared_task
+# def vcfservice(service, assembly: str, input_file: str, error):  # error: Optional[str]
+#     if service not in VCFSERVICES:
+#         raise ValueError(f'unsupported vcf service {service}')
+#     submission = Submission(vcfservice.request.id, service=VCFSERVICES[service])
+#     submission.save()
+#     output_file = f'{input_file.split(".", 1)[0]}.{service}.vcf.gz'
+#     executable = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
+#     command = [executable, assembly, input_file, output_file]
+#     try:
+#         if error is not None:
+#             submission.status = ERROR
+#             submission.message = error
+#             raise ValueError
+#         sp.run(command, check=True, stderr=sp.PIPE)
+#         submission.status = READY
+#         submission.response = output_file
+#         submission.message = 'Done!'
+#     except (sp.CalledProcessError, ValueError):
+#         submission.status = ERROR
+#         submission.message = 'Invalid file format'
+#     finally:
+#         submission.save()
+#         with suppress(FileNotFoundError, TypeError):
+#             os.remove(input_file)
 
 
 @shared_task
-def vcfservice(service, assembly: str, input_file: str, error):  # error: Optional[str]
-    if service not in VCFSERVICES:
-        raise ValueError(f'unsupported vcf service {service}')
-    submission = Submission(vcfservice.request.id, service=VCFSERVICES[service])
-    submission.save()
-    output_file = f'{input_file.split(".", 1)[0]}.{service}.vcf.gz'
-    executable = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
-    command = [executable, assembly, input_file, output_file]
+def annotation_service(action: ServiceAction, *args, **kwargs):
     try:
-        if error is not None:
-            submission.status = ERROR
-            submission.message = error
-            raise ValueError
-        sp.run(command, check=True, stderr=sp.PIPE)
-        submission.status = READY
-        submission.response = output_file
-        submission.message = 'Done!'
-    except (sp.CalledProcessError, ValueError):
-        submission.status = ERROR
-        submission.message = 'Invalid file format'
-    finally:
-        submission.save()
-        with suppress(FileNotFoundError, TypeError):
-            os.remove(input_file)
-
-
-@shared_task
-def service(action: Callable[..., ExceptionalOptional[str]], *args, **kwargs):
-    submission = Submission(service.request.id, service=VCFSERVICES[service])
+        service_name = action.__name__
+    except (TypeError, AttributeError):
+        service_name = str(action)
+    submission = Submission(annotation_service.request.id, service=service_name)
     submission.save()
     result = action(*args, **kwargs)
     submission.status = READY if result else ERROR

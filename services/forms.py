@@ -23,10 +23,10 @@ class BaseAnnotationServiceForm(forms.Form):
     assembly = forms.CharField(widget=forms.Select(choices=ASSEMBLIES),
                                label='Human genome assembly version',
                                max_length=2, required=True)
-    output_format = forms.CharField(widget=forms.Select(choices=OUTPUT_FORMATS),
-                                    label='Output format',
-                                    max_length=3, required=True)
-    compress = forms.BooleanField(initial=True, label='Compress the output')
+    # output_format = forms.CharField(widget=forms.Select(choices=OUTPUT_FORMATS),
+    #                                 label='Output format',
+    #                                 max_length=3, required=True)
+    # compress = forms.BooleanField(initial=True, label='Compress the output')
 
 
 class PointAnnotationForm(BaseAnnotationServiceForm):
