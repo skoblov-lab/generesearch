@@ -21,33 +21,6 @@ VCFSERVICES = {
 }
 
 
-# @shared_task
-# def vcfservice(service, assembly: str, input_file: str, error):  # error: Optional[str]
-#     if service not in VCFSERVICES:
-#         raise ValueError(f'unsupported vcf service {service}')
-#     submission = Submission(vcfservice.request.id, service=VCFSERVICES[service])
-#     submission.save()
-#     output_file = f'{input_file.split(".", 1)[0]}.{service}.vcf.gz'
-#     executable = os.path.join(settings.SERVICES_ROOT, service, service + '.sh')
-#     command = [executable, assembly, input_file, output_file]
-#     try:
-#         if error is not None:
-#             submission.status = ERROR
-#             submission.message = error
-#             raise ValueError
-#         sp.run(command, check=True, stderr=sp.PIPE)
-#         submission.status = READY
-#         submission.response = output_file
-#         submission.message = 'Done!'
-#     except (sp.CalledProcessError, ValueError):
-#         submission.status = ERROR
-#         submission.message = 'Invalid file format'
-#     finally:
-#         submission.save()
-#         with suppress(FileNotFoundError, TypeError):
-#             os.remove(input_file)
-
-
 @shared_task
 def annotation_service(action_name: str, *args, **kwargs):
     action = actions.ACTIONS[action_name]

@@ -1,17 +1,14 @@
 from typing import Optional, Callable
-import logging
 
 from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import render
 from django.urls import reverse
 
+from services import optional
+from services import tasks
 from services.forms import BaseAnnotationServiceForm, PointAnnotationForm, \
     AlleleAnnotationForm, VcfAnnotationForm
 from services.models import Submission
-from services import tasks
-from services import optional
-
-import traceback
 
 SUBMISSIONS = 'submissions'
 FORM_SERVICE_TAG = 'service'
@@ -43,22 +40,16 @@ def make_annotation_service_view(action: optional.ServiceAction, template: str,
     def view(request):
         if request.method == 'POST':
             form = bind_service_form(request)
-            with open('/home/user/test.txt', 'w') as out:
-                if form is not None and form.is_valid():
-                    logging.warning('form ok')
-                    # bind task ID to user's submissions
-                    # TODO this will fail if action does not have a proper name
-                    # TODO or if it is not added to actions.ACTIONS dictionary
-                    try:
-                        submission = tasks.annotation_service.delay(
-                            action.__name__, form.serialise_fields()
-                        )
-                    except Exception as err:
-                        traceback.print_tb(err.__traceback__, file=out)
-                        raise err
-                    request.session.setdefault(SUBMISSIONS, []).append(submission.task_id)
-                    request.session.modified = True
-                    return HttpResponseRedirect(reverse('submissions'))
+            if form is not None and form.is_valid():
+                # bind task ID to user's submissions
+                # TODO this will fail if action does not have a proper name
+                # TODO or if it is not added to actions.ACTIONS dictionary
+                submission = tasks.annotation_service.delay(
+                    action.__name__, form.serialise_fields()
+                )
+                request.session.setdefault(SUBMISSIONS, []).append(submission.task_id)
+                request.session.modified = True
+                return HttpResponseRedirect(reverse('submissions'))
 
         return render(request, template, blank_forms())
 
