@@ -11,6 +11,6 @@ output="$3"
 
 
 # account for header lines while truncating the input
-takelines=$((100000 + $(gzip -cdf ${input} | head -n 500 | grep -c "^#")))
+takelines=$((500000 + $(gzip -cdf ${input} | head -n 500 | grep -c "^#")))
 gzip -cdf ${input} | head -n ${takelines} | ${snpsift} annotate -tabix ${database} \
     | grep -v "^##SnpSift" | bgzip -c > ${output} || if [[ $? -eq 141 ]]; then true; else exit $?; fi

@@ -33,7 +33,7 @@
                     <p class="text-justify text-primary my-4">
                         This tab allows you to submit a single point at a time.
                         While you can make as many of these submissions as you
-                        want, if you have more than a dozen of alleles to
+                        want, if you have more than a dozen of points to
                         process, you should consider the VCF submission form
                         instead.
                     </p>
@@ -51,12 +51,12 @@
                 <!-- VCF submission tab -->
                 <div class="tab-pane fade" id="bulk">
                     <p class="text-justify text-primary my-4">
-                        You can upload and process any VCF file (v4.0 or
-                        4.1), though your upload can be no more than 20MB.
+                        You can upload and process any VCF file (v4.0-4.2),
+                        though your upload can be no more than 20MB.
                         The file can be compressed by any gzip-compatible method
                         (for instance, gzip itself or bgzip). To limit
                         workload, our system only processes the first
-                        100k lines from a submitted VCF file (excluding the
+                        500k lines from a submitted VCF file (excluding the
                         header lines). The output is a bgzipped VCF v4 file.
                     </p>
                     <form role="form" method="post"

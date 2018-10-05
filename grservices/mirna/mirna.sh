@@ -19,7 +19,7 @@ columns="$(cat ${root}/annotation.colnames)"
 infoheader="${root}/annotation.hdr"
 
 # account for header lines while truncating the input
-takelines=$((100000 + $(gzip -cdf "${input}" | head -n 500 | grep -c "^#")))
+takelines=$((500000 + $(gzip -cdf "${input}" | head -n 500 | grep -c "^#")))
 # annotate
 gzip -cdf ${input} | head -n ${takelines} \
     | bcftools annotate -a "${database}" -c "${columns}" -h "${infoheader}" \
