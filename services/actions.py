@@ -33,7 +33,7 @@ def genvcf(suffix, chrom, pos, ref, alt) -> str:
     # TODO purify
     with tempfile.NamedTemporaryFile(mode='w', dir=settings.MEDIA_ROOT,
                                      delete=False, suffix=suffix) as out:
-        vcf = settings.VCF_TEMPLATE.format(chrom=chrom, pos=pos, ref=ref, alt=alt)
+        vcf = settings.VCF_TEMPLATE.format(chrom=chrom, pos=pos, ref=(ref or '.'), alt=(alt or '.'))
         print(vcf, file=out, end=('' if vcf.endswith('\n') else '\n'))
         return out.name
 
