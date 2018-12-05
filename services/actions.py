@@ -48,7 +48,7 @@ def convert_point_vcf(rec: "a PyVCF record") -> Optional[pd.DataFrame]:
     if not (info_converted and any(info_converted.values())):
         return None
     items = [(CHROM, [chrom]), (POS, [pos]), (REF, [ref or '.']),
-             (ALT, [','.join([sub.sequence for sub in filter(bool, alt)])] or '.'),
+             (ALT, [','.join([sub.sequence for sub in filter(bool, alt)]) or '.']),
              *info_converted.items()]
     return pd.DataFrame.from_dict(OrderedDict(items))
 
