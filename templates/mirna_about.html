@@ -11,48 +11,51 @@
     binding regions identified in experiments [1]. Experimentally identified microRNA binding regions
     could be promising as a basis for further queries into not only the fundamental aspects of gene
     regulation but may uncover some new mechanisms caused diseases.
- </p>
+</p>
 
 <h5>What is exp-miBRs?</h5>
 <p class="text-justify"> We have aggregated various experimental data on human microRNA-mRNA
     interactions to identify reliable microRNA binding regions:
-<ul>
-    <li>Two existing experiments that had developed and optimized technique protocol to obtain
+</p>
+<ul class="list-group">
+    <li class="text-justify">Two existing experiments that had developed and optimized technique protocol to obtain
         full human microRNA-mRNA interactome: CLASH [2] and CLEAR-CLIP [3]. </li>
-    <li>79 AGO2-CLIP-seq data from 9 different cell lines.</li>
+    <li class="text-justify">79 AGO2-CLIP-seq data from 9 different cell lines.</li>
 </ul>
-We have extracted from these microRNA binding regions only highly reliable regions (Exp-miBRs) that
+<p>We have extracted from these microRNA binding regions only highly reliable regions (Exp-miBRs) that
 had a subsequence of length L=10, whereas each nucleotide (position) in this subsequence had been supported
 by at least n=2 different datasets or chimeras. <br>
 In total, we revealed 46,8 thousand of experimentally confirmed microRNA binding regions,
-that were located in all parts of mRNAs, including noncoding regions. </p>
+that were located in all parts of mRNAs, including noncoding regions.
+</p>
 
 <h5>Exp-miBRs features:</h5>
 <p class="text-justify"> We characterized each Exp-miBR by the following parameters:
-<ul>
-    <li><b>Region information:</b> Genome strand +/- (MIRNA_STRAND), gene name (MIRNA_GENES),
+</p>
+<ul class="list-group">
+    <li class="text-justify"><b>Region information:</b> Genome strand +/- (MIRNA_STRAND), gene name (MIRNA_GENES),
              type of mRNA part (MIRNA_REGION).</li>
-    <li><b>Supported dataset characteristics:</b> amount (MIRNA_NDATASET) and list (MIRNA_DATASET)
+    <li class="text-justify"><b>Supported dataset characteristics:</b> amount (MIRNA_NDATASET) and list (MIRNA_DATASET)
         of supported experiments (IDs from www.ncbi.nlm.nih.gov/geo) and their corresponding cell
         lines (MIRNA_LINES, MIRNA_NLINES).</li>
-    <li><b>Interacted miRNAs</b> (that were detected in CLASH or CLEAR-CLIP experiment as a part of chimeras):
+    <li class="text-justify"><b>Interacted miRNAs</b> (that were detected in CLASH or CLEAR-CLIP experiment as a part of chimeras):
         list of interacted microRNAs (if accessible) (MIRNA).</li>
 </ul>
-</p>
 
 <h5>Start to use:</h5>
 <p class="text-justify">There are a few different modes to analyze nucleotide variants location in exp-miBR:
-<ul>
-    <li><b>Process a single point:</b> allows you to submit a single point at a time.
+</p>
+<ul class="list-group">
+    <li class="text-justify"><b>Process a single point:</b> allows you to submit a single point at a time.
         While you can make as many of these submissions as you want. If you have more than a dozen of
         points to process, you should consider the VCF submission form instead.</li>
-    <li><b>Process a VCF query:</b> Allow you to upload and process any VCF file (v4.0-4.2),
+    <li class="text-justify"><b>Process a VCF query:</b> Allow you to upload and process any VCF file (v4.0-4.2),
         though your upload can be no more than 20MB. The file can be compressed by any gzip-compatible
         method (for instance, gzip itself or bgzip). To limit workload, our system only processes the
         first 500k lines from a submitted VCF file (excluding the header lines).
         The output is a bgzipped VCF v4 file. Please, check that your vcf file has a correct
         heading form (you can copy it from example vcf file below).</li>
-    <li><b>Download track:</b> Allow you to download all exp-miBRs with their characteristics as a
+    <li class="text-justify"><b>Download track:</b> Allow you to download all exp-miBRs with their characteristics as a
         separate file. There are separate files for both genome versions (hg19 and hg38).
         Each line in file is corresponded to one exp-miBR.</li>
-</ul></p>
+</ul>
