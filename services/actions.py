@@ -33,7 +33,7 @@ def genvcf(suffix, chrom, pos, ref, alt) -> str:
     # TODO purify
     with tempfile.NamedTemporaryFile(mode='w', dir=settings.MEDIA_ROOT,
                                      delete=False, suffix=suffix) as out:
-        vcf = settings.VCF_TEMPLATE.format(chrom=chrom, pos=pos, ref=ref, alt=alt)
+        vcf = settings.VCF_TEMPLATE.format(chrom=chrom, pos=pos, ref=(ref or '.'), alt=(alt or '.'))
         print(vcf, file=out, end=('' if vcf.endswith('\n') else '\n'))
         return out.name
 
@@ -47,8 +47,8 @@ def convert_point_vcf(rec: "a PyVCF record") -> Optional[pd.DataFrame]:
     info_converted = {key: field_converter(value) for key, value in info.items()}
     if not (info_converted and any(info_converted.values())):
         return None
-    items = [(CHROM, [chrom]), (POS, [pos]), (REF, [ref or '']),
-             (ALT, [','.join([sub.sequence for sub in filter(bool, alt)])]),
+    items = [(CHROM, [chrom]), (POS, [pos]), (REF, [ref or '.']),
+             (ALT, [','.join([sub.sequence for sub in filter(bool, alt)]) or '.']),
              *info_converted.items()]
     return pd.DataFrame.from_dict(OrderedDict(items))
 
