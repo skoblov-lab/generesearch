@@ -59,3 +59,82 @@ that were located in all parts of mRNAs, including noncoding regions.
         separate file. There are separate files for both genome versions (hg19 and hg38).
         Each line in file is corresponded to one exp-miBR.</li>
 </ul>
+
+<h5>Example of processing</h5>
+<p class="text-justify"><b>Input vcf file contains the following variants:</b></p>
+<p class="text-justify">SOME HEADINGS</p>
+<p class="text-justify">#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO </p>
+<p class="text-justify">1	40073961	.	.	.	.	.	.</p>
+<p class="text-justify">3	68194389	.	G	A	.	.	.</p>
+<p class="text-justify">7	43876072	.	.	.	.	.	.</p>
+
+<p class="text-justify"><b>The output vcf file will be extended by new fields in INFO (to all variants
+    that are located in exp-miBRS) and their descriptions in heading section.
+</b></p>
+<p class="text-justify">SOME HEADINGS</p>
+<p class="text-justify">##INFO=ID=MIRNA_STRAND,Number=.,Type=String,Description="A comma-separated list of miRNAs"</p>
+<p class="text-justify">##INFO=ID=MIRNA_NDATASET,Number=.,Type=Integer,Description="Number of datasets"</p>
+<p class="text-justify">##INFO=ID=MIRNA_DATASET,Number=.,Type=String,Description="A comma-separated list of datasets"</p>
+<p class="text-justify">##INFO=ID=MIRNA_NLINES,Number=.,Type=Integer,Description="Number of cell lines"</p>
+<p class="text-justify">##INFO=ID=MIRNA_LINES,Number=.,Type=String,Description="A comma-separated list of cell lines"</p>
+<p class="text-justify">##INFO=ID=MIRNA,Number=.,Type=String,Description="A comma-separated list of miRNAs"</p>
+<p class="text-justify">##INFO=ID=MIRNA_REGION,Number=.,Type=String,Description="A comma-separated list of region descriptors"</p>
+<p class="text-justify">##INFO=ID=MIRNA_GENES,Number=.,Type=String,Description="A comma-separated list of genes"</p>
+<p class="text-justify">#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO </p>
+<p class="text-justify">1	40073961	.	.	.	.	.
+    MIRNA_STRAND=-;MIRNA_NDATASET=3;MIRNA_DATASET=GSE32113%GSM796037,GSE32113%GSM796038,GSE50452%CLASH;MIRNA_NLINES=2;
+    MIRNA_LINES=BC-1,HEK293;MIRNA=hsa-miR-320a;MIRNA_REGION=UTR3;MIRNA_GENES=PPT1</p>
+<p class="text-justify">3	68194389	.	G	A	.	.	.</p>
+<p class="text-justify">7	43876072	.	.	.	.	.	MIRNA_STRAND=-;MIRNA_NDATASET=2;
+    MIRNA_DATASET=GSE28865%GSM714644,GSE28865%GSM714646;MIRNA_NLINES=1;MIRNA_LINES=HEK293;MIRNA_REGION=UTR3;
+    MIRNA_GENES=URGCP</p>
+
+<h5>Interpretation:</h5>
+<ol class="list-group">
+    <li class="text-justify"><b>Variant chr1 40073961:</b> is located in exp-miBR that was supported
+        in 3 (MIRNA_NDATASET=3) experiments (MIRNA_DATASET=GSE32113%GSM796037,GSE32113%GSM796038,GSE50452%CLASH).
+        These three datasets are corresponded to two different cell lines (MIRNA_NLINES=2; MIRNA_LINES=BC-1,HEK293).
+        There is one known interacted microRNA (MIRNA=hsa-miR-320a). This exp-miBR is located in 3 UTR region
+        (MIRNA_REGION=UTR3) of PPT1 gene (MIRNA_GENES=PPT1).</li>
+    <li class="text-justify"><b>Variant chr3 68194389:</b> is not located in any exp-miBRs.</li>
+    <li class="text-justify"><b>Variant chr7 43876072:</b> is located in exp-miBR that was supported in 2
+        (MIRNA_NDATASET=2) experiments (MIRNA_DATASET= GSE28865%GSM714644,GSE28865%GSM714646).
+        These two datasets are corresponded to only one cell line (MIRNA_NLINES=1;MIRNA_LINES=HEK293).
+        Due to the fact that all supported datasets are AGO-CLIP there is no information about interacted microRNA.
+        This exp-miBR is located in 3 UTR region (MIRNA_REGION=UTR3) of PPT1 gene (MIRNA_GENES=URGCP).</li>
+</ol>
+<p class="text-justify">Full information about supported experiments could be find at
+    <a class="text-info" href="http://www.ncbi.nlm.nih.gov/geo">NCBI GEO</a> by the provided GSE and GSM ids.
+</p>
+
+<h5>Download:</h5>
+<p class="text-justify">Example of input vcf file with correct headings:
+    <a class="text-info" href="https://drive.google.com/open?id=1QYTmKeVi_P7dCCCriFe_7VAPQFK3k8AA">
+        Example_input.vcf (634B)</a></p>
+<p class="text-justify">Example of output vcf file:
+    <a class="text-info" href="https://drive.google.com/open?id=1pQaWJezZKKU8mWTL8uNv-hvofTg95Q0s">
+        Example_output.vcf (2KB)</a></p>
+<p class="text-justify">Download all high confidence microRNA binding regions along with the characteristics of each of
+    these regions as tsv file (reference of human genome: <b>hg19</b>)
+    <a class="text-info" href="https://drive.google.com/open?id=130ER2qFoFWZIq67TwNSIlFrmcJJLMmB8">
+        Exp-miBRS_track_information_hg19.tsv (6,5MB)</a></p>
+<p class="text-justify">Download all high confidence microRNA binding regions along with the characteristics of each of
+    these regions as tsv file (reference of human genome: <b>hg38</b>)
+    <a class="text-info" href="https://drive.google.com/open?id=13FU7nSHZWPEMuj8bKONDTLlj9-Oame6G">
+        Exp-miBRS_track_information_hg38.tsv (6,6MB)</a></p>
+
+<h5>How to cite:</h5>
+<p class="text-justify">While the paper is under review, please cite
+    <a class="text-info" href="https://www.biorxiv.org/content/10.1101/675694v1">pre-print version</a></p>
+<p class="text-justify">Plotnikova, Olga, Ancha Baranova, and Mikhail Skoblov. "Comprehensive analysis of
+    human microRNA-mRNA interactome." bioRxiv (2019): 675694. doi: https://doi.org/10.1101/675694</p>
+
+<h5>Reference:</h5>
+<ol class="list-group">
+    <li class="text-justify">O.M.Plotnikova, M. Y. Skoblov (2018) Efficiency of the miRNA–mRNA interaction prediction
+        programs, Molecular Biology, 52.3:467–477.</li>
+    <li class="text-justify">Helwak A. et al. (2013) Mapping the human miRNA interactome by CLASH reveals
+        frequent noncanonical binding, Cell, 153.3:654–665.</li>
+    <li class="text-justify">Moore M. J. et al. (2015) miRNA–target chimeras reveal miRNA 3′-end pairing as a major
+        determinant of Argonaute target specificity, Nature communications, 6:8864.</li>
+</ol>
