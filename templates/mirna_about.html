@@ -3,6 +3,7 @@
     position with experimentally confirmed microRNA binding regions (Exp-miBR)
     and their features.
 </p>
+<br>
 
 <h5>Motivation</h5>
 <p class="text-justify">microRNAs are small noncoding RNAs, that accomplish an essential post-transcriptional
@@ -12,6 +13,7 @@
     could be promising as a basis for further queries into not only the fundamental aspects of gene
     regulation but may uncover some new mechanisms caused diseases.
 </p>
+<br>
 
 <h5>What is exp-miBRs?</h5>
 <p class="text-justify"> We have aggregated various experimental data on human microRNA-mRNA
@@ -28,6 +30,7 @@ by at least n=2 different datasets or chimeras. <br>
 In total, we revealed 46,8 thousand of experimentally confirmed microRNA binding regions,
 that were located in all parts of mRNAs, including noncoding regions.
 </p>
+<br>
 
 <h5>Exp-miBRs features:</h5>
 <p class="text-justify"> We characterized each Exp-miBR by the following parameters:
@@ -41,8 +44,9 @@ that were located in all parts of mRNAs, including noncoding regions.
     <li class="text-justify"><b>Interacted miRNAs</b> (that were detected in CLASH or CLEAR-CLIP experiment as a part of chimeras):
         list of interacted microRNAs (if accessible) (MIRNA).</li>
 </ul>
-
-<h5>Starter on the service:</h5>
+<br>
+<h5>How it works?</h5>
+<h3>Starter on the service:</h3>
 <p class="text-justify">There are a few different modes to analyze nucleotide variants location in exp-miBR:
 </p>
 <ul class="list-group">
@@ -59,8 +63,8 @@ that were located in all parts of mRNAs, including noncoding regions.
         separate file. There are separate files for both genome versions (hg19 and hg38).
         Each line in file is corresponded to one exp-miBR.</li>
 </ul>
-
-<h5>Example of processing</h5>
+<br>
+<h3>Example of processing</h3>
 <p class="text-justify"><b>Input vcf file contains the following variants:</b></p>
 <p class="text-justify">SOME HEADINGS</p>
 <p class="text-justify">#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO </p>
@@ -88,8 +92,8 @@ that were located in all parts of mRNAs, including noncoding regions.
 <p class="text-justify">7	43876072	.	.	.	.	.	MIRNA_STRAND=-;MIRNA_NDATASET=2;
     MIRNA_DATASET=GSE28865%GSM714644,GSE28865%GSM714646;MIRNA_NLINES=1;MIRNA_LINES=HEK293;MIRNA_REGION=UTR3;
     MIRNA_GENES=URGCP</p>
-
-<h5>Interpretation:</h5>
+<br>
+<h3>Interpretation:</h3>
 <ol class="list-group">
     <li class="text-justify"><b>Variant chr1 40073961:</b> is located in exp-miBR that was supported
         in 3 (MIRNA_NDATASET=3) experiments (MIRNA_DATASET=GSE32113%GSM796037,GSE32113%GSM796038,GSE50452%CLASH).
@@ -106,8 +110,9 @@ that were located in all parts of mRNAs, including noncoding regions.
 <p class="text-justify">Full information about supported experiments could be find at
     <a class="text-info" href="http://www.ncbi.nlm.nih.gov/geo">NCBI GEO</a> by the provided GSE and GSM ids.
 </p>
+<br>
 
-<h5>Download:</h5>
+<h3>Download:</h3>
 <p class="text-justify">Example of input vcf file with correct headings:
     <a class="text-info" href="https://drive.google.com/open?id=1QYTmKeVi_P7dCCCriFe_7VAPQFK3k8AA">
         Example_input.vcf (634B)</a></p>
@@ -122,12 +127,14 @@ that were located in all parts of mRNAs, including noncoding regions.
     these regions as tsv file (reference of human genome: <b>hg38</b>)
     <a class="text-info" href="https://drive.google.com/open?id=13FU7nSHZWPEMuj8bKONDTLlj9-Oame6G">
         Exp-miBRS_track_information_hg38.tsv (6,6MB)</a></p>
+<br>
 
 <h5>How to cite:</h5>
 <p class="text-justify">While the paper is under review, please cite
     <a class="text-info" href="https://www.biorxiv.org/content/10.1101/675694v1">pre-print version</a></p>
 <p class="text-justify">Plotnikova, Olga, Ancha Baranova, and Mikhail Skoblov. "Comprehensive analysis of
     human microRNA-mRNA interactome." bioRxiv (2019): 675694. doi: https://doi.org/10.1101/675694</p>
+<br>
 
 <h5>Reference:</h5>
 <ol class="list-group">
