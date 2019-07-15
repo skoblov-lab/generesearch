@@ -65,34 +65,35 @@ that were located in all parts of mRNAs, including noncoding regions.
 </ul>
 <br>
 <h3>Example of processing</h3>
-<p class="text-justify"><b>Input vcf file contains the following variants:</b></p>
-<p class="text-justify">SOME HEADINGS</p>
-<p class="text-justify">#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO </p>
-<p class="text-justify">1	40073961	.	.	.	.	.	.</p>
-<p class="text-justify">3	68194389	.	G	A	.	.	.</p>
-<p class="text-justify">7	43876072	.	.	.	.	.	.</p>
-
-<p class="text-justify"><b>The output vcf file will be extended by new fields in INFO (to all variants
-    that are located in exp-miBRS) and their descriptions in heading section.
-</b></p>
-<p class="text-justify">SOME HEADINGS</p>
-<p class="text-justify">##INFO=ID=MIRNA_STRAND,Number=.,Type=String,Description="A comma-separated list of miRNAs"</p>
-<p class="text-justify">##INFO=ID=MIRNA_NDATASET,Number=.,Type=Integer,Description="Number of datasets"</p>
-<p class="text-justify">##INFO=ID=MIRNA_DATASET,Number=.,Type=String,Description="A comma-separated list of datasets"</p>
-<p class="text-justify">##INFO=ID=MIRNA_NLINES,Number=.,Type=Integer,Description="Number of cell lines"</p>
-<p class="text-justify">##INFO=ID=MIRNA_LINES,Number=.,Type=String,Description="A comma-separated list of cell lines"</p>
-<p class="text-justify">##INFO=ID=MIRNA,Number=.,Type=String,Description="A comma-separated list of miRNAs"</p>
-<p class="text-justify">##INFO=ID=MIRNA_REGION,Number=.,Type=String,Description="A comma-separated list of region descriptors"</p>
-<p class="text-justify">##INFO=ID=MIRNA_GENES,Number=.,Type=String,Description="A comma-separated list of genes"</p>
-<p class="text-justify">#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO </p>
-<p class="text-justify">1	40073961	.	.	.	.	.
-    MIRNA_STRAND=-;MIRNA_NDATASET=3;MIRNA_DATASET=GSE32113%GSM796037,GSE32113%GSM796038,GSE50452%CLASH;MIRNA_NLINES=2;
-    MIRNA_LINES=BC-1,HEK293;MIRNA=hsa-miR-320a;MIRNA_REGION=UTR3;MIRNA_GENES=PPT1</p>
-<p class="text-justify">3	68194389	.	G	A	.	.	.</p>
-<p class="text-justify">7	43876072	.	.	.	.	.	MIRNA_STRAND=-;MIRNA_NDATASET=2;
-    MIRNA_DATASET=GSE28865%GSM714644,GSE28865%GSM714646;MIRNA_NLINES=1;MIRNA_LINES=HEK293;MIRNA_REGION=UTR3;
-    MIRNA_GENES=URGCP</p>
+<p class="text-justify">Input vcf file contains the following variants:</p>
+<pre>
+    SOME HEADINGS
+    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+    1	40073961	.	.	.	.	.	.
+    3	68194389	.	G	A	.	.	.
+    7	43876072	.	.	.	.	.	.
+</pre>
 <br>
+<p class="text-justify">The output vcf file will be extended by new fields in INFO (to all variants
+    that are located in exp-miBRS) and their descriptions in heading section.
+</p>
+<pre>
+    SOME HEADINGS
+    ##INFO=ID=MIRNA_STRAND,Number=.,Type=String,Description="A comma-separated list of miRNAs"
+    ##INFO=ID=MIRNA_NDATASET,Number=.,Type=Integer,Description="Number of datasets"
+    ##INFO=ID=MIRNA_DATASET,Number=.,Type=String,Description="A comma-separated list of datasets"
+    ##INFO=ID=MIRNA_NLINES,Number=.,Type=Integer,Description="Number of cell lines"
+    ##INFO=ID=MIRNA_LINES,Number=.,Type=String,Description="A comma-separated list of cell lines"
+    ##INFO=ID=MIRNA,Number=.,Type=String,Description="A comma-separated list of miRNAs"
+    ##INFO=ID=MIRNA_REGION,Number=.,Type=String,Description="A comma-separated list of region descriptors"
+    ##INFO=ID=MIRNA_GENES,Number=.,Type=String,Description="A comma-separated list of genes"
+    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+    1	40073961	.	.	.	.	.	MIRNA_STRAND=-;MIRNA_NDATASET=3;MIRNA_DATASET=GSE32113%GSM796037,GSE32113%GSM796038,GSE50452%CLASH;MIRNA_NLINES=2;MIRNA_LINES=BC-1,HEK293;MIRNA=hsa-miR-320a;MIRNA_REGION=UTR3;MIRNA_GENES=PPT1
+    3	68194389	.	G	A	.	.	.
+    7	43876072	.	.	.	.	.	MIRNA_STRAND=-;MIRNA_NDATASET=2;MIRNA_DATASET=GSE28865%GSM714644,GSE28865%GSM714646;MIRNA_NLINES=1;MIRNA_LINES=HEK293;MIRNA_REGION=UTR3;MIRNA_GENES=URGCP
+</pre>
+<br>
+
 <h3>Interpretation:</h3>
 <ol class="list-unstyled">
     <li><b>Variant chr1 40073961:</b> is located in exp-miBR that was supported
