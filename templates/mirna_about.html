@@ -19,10 +19,10 @@
 <p class="text-justify"> We have aggregated various experimental data on human microRNA-mRNA
     interactions to identify reliable microRNA binding regions:
 </p>
-<ul class="list-unstyled">
-    <li>Two existing experiments that had developed and optimized technique protocol to obtain
+<ul class="list-group">
+    <li class="text-info"> Two existing experiments that had developed and optimized technique protocol to obtain
         full human microRNA-mRNA interactome: CLASH [2] and CLEAR-CLIP [3]. </li>
-    <li>79 AGO2-CLIP-seq data from 9 different cell lines.</li>
+    <li class="text-info"> 79 AGO2-CLIP-seq data from 9 different cell lines.</li>
 </ul>
 <p>We have extracted from these microRNA binding regions only highly reliable regions (Exp-miBRs) that
 had a subsequence of length L=10, whereas each nucleotide (position) in this subsequence had been supported
@@ -35,13 +35,13 @@ that were located in all parts of mRNAs, including noncoding regions.
 <h5>Exp-miBRs features:</h5>
 <p class="text-justify"> We characterized each Exp-miBR by the following parameters:
 </p>
-<ul class="list-unstyled">
-    <li><b>Region information:</b> Genome strand +/- (MIRNA_STRAND), gene name (MIRNA_GENES),
+<ul class="list-group">
+    <li class="text-info"><b> Region information:</b> Genome strand +/- (MIRNA_STRAND), gene name (MIRNA_GENES),
              type of mRNA part (MIRNA_REGION).</li>
-    <li><b>Supported dataset characteristics:</b> amount (MIRNA_NDATASET) and list (MIRNA_DATASET)
+    <li class="text-info"><b> Supported dataset characteristics:</b> amount (MIRNA_NDATASET) and list (MIRNA_DATASET)
         of supported experiments (IDs from www.ncbi.nlm.nih.gov/geo) and their corresponding cell
         lines (MIRNA_LINES, MIRNA_NLINES).</li>
-    <li><b>Interacted miRNAs</b> (that were detected in CLASH or CLEAR-CLIP experiment as a part of chimeras):
+    <li class="text-info"><b> Interacted miRNAs</b> (that were detected in CLASH or CLEAR-CLIP experiment as a part of chimeras):
         list of interacted microRNAs (if accessible) (MIRNA).</li>
 </ul>
 <br>
@@ -49,17 +49,17 @@ that were located in all parts of mRNAs, including noncoding regions.
 <h6>Starter on the service:</h6>
 <p class="text-justify">There are a few different modes to analyze nucleotide variants location in exp-miBR:
 </p>
-<ul class="list-unstyled">
-    <li><b>Process a single point:</b> allows you to submit a single point at a time.
+<ul class="list-group">
+    <li class="text-info"><b> Process a single point:</b> allows you to submit a single point at a time.
         While you can make as many of these submissions as you want. If you have more than a dozen of
         points to process, you should consider the VCF submission form instead.</li>
-    <li><b>Process a VCF query:</b> Allow you to upload and process any VCF file (v4.0-4.2),
+    <li class="text-info"><b> Process a VCF query:</b> Allow you to upload and process any VCF file (v4.0-4.2),
         though your upload can be no more than 20MB. The file can be compressed by any gzip-compatible
         method (for instance, gzip itself or bgzip). To limit workload, our system only processes the
         first 500k lines from a submitted VCF file (excluding the header lines).
         The output is a bgzipped VCF v4 file. Please, check that your vcf file has a correct
         heading form (you can copy it from example vcf file below).</li>
-    <li><b>Download track:</b> Allow you to download all exp-miBRs with their characteristics as a
+    <li class="text-info"><b> Download track:</b> Allow you to download all exp-miBRs with their characteristics as a
         separate file. There are separate files for both genome versions (hg19 and hg38).
         Each line in file is corresponded to one exp-miBR.</li>
 </ul>
@@ -95,14 +95,14 @@ that were located in all parts of mRNAs, including noncoding regions.
 <br>
 
 <h6>Interpretation:</h6>
-<ol class="list-unstyled">
-    <li><b>Variant chr1 40073961:</b> is located in exp-miBR that was supported
+<ol class="list-group">
+    <li class="text-info"><b> Variant chr1 40073961:</b> is located in exp-miBR that was supported
         in 3 (MIRNA_NDATASET=3) experiments (MIRNA_DATASET=GSE32113%GSM796037,GSE32113%GSM796038,GSE50452%CLASH).
         These three datasets are corresponded to two different cell lines (MIRNA_NLINES=2; MIRNA_LINES=BC-1,HEK293).
         There is one known interacted microRNA (MIRNA=hsa-miR-320a). This exp-miBR is located in 3 UTR region
         (MIRNA_REGION=UTR3) of PPT1 gene (MIRNA_GENES=PPT1).</li>
-    <li><b>Variant chr3 68194389:</b> is not located in any exp-miBRs.</li>
-    <li><b>Variant chr7 43876072:</b> is located in exp-miBR that was supported in 2
+    <li class="text-info"><b> Variant chr3 68194389:</b> is not located in any exp-miBRs.</li>
+    <li class="text-info"><b> Variant chr7 43876072:</b> is located in exp-miBR that was supported in 2
         (MIRNA_NDATASET=2) experiments (MIRNA_DATASET= GSE28865%GSM714644,GSE28865%GSM714646).
         These two datasets are corresponded to only one cell line (MIRNA_NLINES=1;MIRNA_LINES=HEK293).
         Due to the fact that all supported datasets are AGO-CLIP there is no information about interacted microRNA.
@@ -138,11 +138,11 @@ that were located in all parts of mRNAs, including noncoding regions.
 <br>
 
 <h5>Reference:</h5>
-<ol class="list-unstyled">
-    <li>O.M.Plotnikova, M. Y. Skoblov (2018) Efficiency of the miRNA–mRNA interaction prediction
+<ol class="list-group">
+    <li class="text-info"> O.M.Plotnikova, M. Y. Skoblov (2018) Efficiency of the miRNA–mRNA interaction prediction
         programs, Molecular Biology, 52.3:467–477.</li>
-    <li>Helwak A. et al. (2013) Mapping the human miRNA interactome by CLASH reveals
+    <li class="text-info"> Helwak A. et al. (2013) Mapping the human miRNA interactome by CLASH reveals
         frequent noncanonical binding, Cell, 153.3:654–665.</li>
-    <li>Moore M. J. et al. (2015) miRNA–target chimeras reveal miRNA 3′-end pairing as a major
+    <li class="text-info"> Moore M. J. et al. (2015) miRNA–target chimeras reveal miRNA 3′-end pairing as a major
         determinant of Argonaute target specificity, Nature communications, 6:8864.</li>
 </ol>
